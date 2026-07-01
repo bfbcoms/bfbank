@@ -31,9 +31,21 @@ export function PWALayout({ children }: { children: ReactNode }) {
               Bright Future
             </span>
           </div>
-          <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-            Personal
-          </span>
+          <div className="flex items-center gap-2">
+            {isStaff && (
+              <Link
+                to="/admin"
+                aria-label="Admin console"
+                className="inline-flex items-center gap-1 border border-primary/40 px-2 py-1 text-[10px] uppercase tracking-[0.2em] text-primary"
+              >
+                <ShieldCheck className="h-3 w-3" strokeWidth={1.5} />
+                Admin
+              </Link>
+            )}
+            <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+              Personal
+            </span>
+          </div>
         </div>
       </header>
 
