@@ -152,6 +152,7 @@ function RootComponent() {
 
   useEffect(() => {
     void import("@/pwa/register").then((m) => m.registerAppServiceWorker());
+    void import("@/lib/validate-currencies").then((m) => m.runCurrencyRegistryCheck());
   }, []);
 
   return (

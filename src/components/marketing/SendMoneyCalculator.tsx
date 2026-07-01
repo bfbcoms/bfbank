@@ -1,14 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowDownUp, AlertCircle } from "lucide-react";
+import { ArrowDownUp, AlertCircle, Check, ChevronDown, RefreshCw } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { CurrencyFlag } from "@/components/CurrencyFlag";
+import { cn } from "@/lib/utils";
 import {
   NIUM_CURRENCIES,
   SEND_CURRENCY_CODES,
@@ -16,6 +19,10 @@ import {
   getCurrency,
 } from "@/lib/currencies";
 
+/**
+ * Searchable currency picker: type-to-filter by code or name, arrow-key
+ * navigation, Enter to select, Esc to close.
+ */
 function CurrencySelect({
   value,
   onChange,
@@ -27,33 +34,67 @@ function CurrencySelect({
   options: readonly string[];
   ariaLabel: string;
 }) {
+  const [open, setOpen] = useState(false);
   return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger
         aria-label={ariaLabel}
-        className="h-11 w-auto min-w-[112px] shrink-0 gap-2 rounded-xl border-border bg-background px-3 text-sm font-medium uppercase tracking-institutional text-foreground focus:border-primary focus:ring-2 focus:ring-primary/30"
+        className="inline-flex h-11 min-w-[112px] shrink-0 items-center gap-2 rounded-xl border border-border bg-background px-3 text-sm font-medium uppercase tracking-institutional text-foreground transition-colors hover:border-primary/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
       >
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent className="max-h-80">
-        {options.map((o) => {
-          const meta = getCurrency(o);
-          return (
-            <SelectItem key={o} value={o} className="pl-2">
-              <span className="flex items-center gap-2 font-medium">
-                <CurrencyFlag code={o} />
-                <span className="uppercase tracking-institutional">{o}</span>
-                {meta ? (
-                  <span className="ml-1 hidden text-xs font-normal normal-case text-muted-foreground sm:inline">
-                    {meta.name}
-                  </span>
-                ) : null}
-              </span>
-            </SelectItem>
-          );
-        })}
-      </SelectContent>
-    </Select>
+        <CurrencyFlag code={value} />
+        <span>{value}</span>
+        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.75} />
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-72 p-0" sideOffset={6}>
+        <Command
+          filter={(itemValue, search) => {
+            const code = itemValue.toLowerCase();
+            const meta = getCurrency(code);
+            const q = search.trim().toLowerCase();
+            if (!q) return 1;
+            if (code.includes(q)) return 1;
+            if (meta?.name.toLowerCase().includes(q)) return 0.9;
+            return 0;
+          }}
+        >
+          <CommandInput placeholder="Search currency or country…" />
+          <CommandList className="max-h-72">
+            <CommandEmpty>No currency found.</CommandEmpty>
+            <CommandGroup>
+              {options.map((o) => {
+                const meta = getCurrency(o);
+                return (
+                  <CommandItem
+                    key={o}
+                    value={o}
+                    onSelect={(v) => {
+                      onChange(v.toUpperCase());
+                      setOpen(false);
+                    }}
+                    className="gap-2"
+                  >
+                    <CurrencyFlag code={o} />
+                    <span className="font-medium uppercase tracking-institutional">{o}</span>
+                    {meta ? (
+                      <span className="ml-1 truncate text-xs font-normal normal-case text-muted-foreground">
+                        {meta.name}
+                      </span>
+                    ) : null}
+                    <Check
+                      className={cn(
+                        "ml-auto h-4 w-4 text-primary",
+                        value === o ? "opacity-100" : "opacity-0",
+                      )}
+                      strokeWidth={2}
+                    />
+                  </CommandItem>
+                );
+              })}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }
 
@@ -72,16 +113,31 @@ Object.assign(USD_RATES, {
   NPR: 133.10, NZD: 1.6420, OMR: 0.3845, PEN: 3.7420, PHP: 56.310, PKR: 278.20,
   PLN: 4.0110, QAR: 3.6410, RON: 4.5620, RSD: 108.70, SAR: 3.7502, SEK: 10.510,
   SGD: 1.3410, THB: 34.410, TND: 3.1210, TRY: 32.410, TWD: 32.140, TZS: 2610,
-  UGX: 3720, UYU: 39.410, VND: 24810, XOF: 611.20, ZAR: 18.410,
+  UGX: 3720, UYU: 39.410, VND: 24810, XAF: 611.20, XOF: 611.20, ZAR: 18.410,
 });
 
 function crossRate(from: string, to: string): number {
   if (from === to) return 1;
   const f = USD_RATES[from];
   const t = USD_RATES[to];
-  if (!f || !t) return 1;
-  // (1 USD = t "to") / (1 USD = f "from") = "to" per "from"
+  if (!f || !t) throw new Error(`Missing rate for ${!f ? from : to}`);
   return t / f;
+}
+
+/**
+ * Simulated async rate lookup (matches the shape of a real /rates call).
+ * Kept intentionally fast (~250ms) but instrumented with a 3s timeout so
+ * the UI can render a clean error path if the network stalls.
+ */
+async function fetchRate(from: string, to: string, signal: AbortSignal): Promise<number> {
+  await new Promise<void>((resolve, reject) => {
+    const id = setTimeout(resolve, 220 + Math.random() * 180);
+    signal.addEventListener("abort", () => {
+      clearTimeout(id);
+      reject(new DOMException("Aborted", "AbortError"));
+    });
+  });
+  return crossRate(from, to);
 }
 
 const SEND_CURRENCIES = SEND_CURRENCY_CODES;
@@ -90,11 +146,20 @@ const RECEIVE_CURRENCIES = RECEIVE_CURRENCY_CODES;
 const FEE_RATE = 0.0035; // 0.35%
 const MAX_AMOUNT = 250_000;
 const MIN_AMOUNT = 1;
+const RATE_TIMEOUT_MS = 3000;
+
+type RateState =
+  | { status: "loading" }
+  | { status: "ready"; rate: number }
+  | { status: "error"; message: string };
 
 export function SendMoneyCalculator() {
   const [amount, setAmount] = useState("1000");
   const [send, setSend] = useState<string>("GBP");
   const [receive, setReceive] = useState<string>("USD");
+  const [rateState, setRateState] = useState<RateState>({ status: "loading" });
+  const [reloadKey, setReloadKey] = useState(0);
+  const attemptRef = useRef(0);
 
   const numeric = Number(amount.replace(/,/g, "")) || 0;
 
@@ -105,12 +170,40 @@ export function SendMoneyCalculator() {
     if (numeric > MAX_AMOUNT)
       return { ok: false, message: `For transfers above ${new Intl.NumberFormat("en-GB").format(MAX_AMOUNT)} ${send}, contact our payments desk.` };
     return { ok: true, message: "" };
-
   }, [amount, numeric, send]);
 
-  const rate = useMemo(() => crossRate(send, receive), [send, receive]);
+  useEffect(() => {
+    const controller = new AbortController();
+    const attempt = ++attemptRef.current;
+    setRateState({ status: "loading" });
+    const timeoutId = setTimeout(() => controller.abort(), RATE_TIMEOUT_MS);
+    fetchRate(send, receive, controller.signal)
+      .then((rate) => {
+        if (attempt !== attemptRef.current) return;
+        setRateState({ status: "ready", rate });
+      })
+      .catch((err: unknown) => {
+        if (attempt !== attemptRef.current) return;
+        const isAbort = err instanceof DOMException && err.name === "AbortError";
+        setRateState({
+          status: "error",
+          message: isAbort
+            ? "Rate lookup timed out. Please try again."
+            : err instanceof Error
+              ? err.message
+              : "Couldn't load rate.",
+        });
+      })
+      .finally(() => clearTimeout(timeoutId));
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, [send, receive, reloadKey]);
+
+  const rate = rateState.status === "ready" ? rateState.rate : 0;
   const fee = numeric * FEE_RATE;
-  const converted = validation.ok ? (numeric - fee) * rate : 0;
+  const converted = validation.ok && rateState.status === "ready" ? (numeric - fee) * rate : 0;
 
   const fmt = (v: number, ccy: string) =>
     new Intl.NumberFormat("en-GB", { style: "currency", currency: ccy, maximumFractionDigits: 2 }).format(v);
@@ -123,8 +216,9 @@ export function SendMoneyCalculator() {
       setReceive(send);
       setSend(next);
     }
-
   };
+
+  const retry = () => setReloadKey((k) => k + 1);
 
   return (
     <div className="overflow-hidden rounded-3xl border border-white/10 bg-background text-foreground shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)]">
@@ -133,7 +227,8 @@ export function SendMoneyCalculator() {
           Live transfer preview
         </p>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-primary">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary" /> Live
+          <span className={cn("h-1.5 w-1.5 rounded-full bg-primary", rateState.status === "loading" && "animate-pulse")} />
+          {rateState.status === "loading" ? "Fetching" : rateState.status === "error" ? "Offline" : "Live"}
         </span>
       </div>
 
@@ -167,19 +262,25 @@ export function SendMoneyCalculator() {
               <label className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                 Recipient gets
               </label>
-              <div className="mt-1 h-8 overflow-hidden">
-                <AnimatePresence mode="popLayout" initial={false}>
-                  <motion.div
-                    key={`${converted.toFixed(2)}-${receive}`}
-                    initial={{ y: 12, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -12, opacity: 0 }}
-                    transition={{ duration: 0.22, ease: [0.2, 0.8, 0.2, 1] }}
-                    className="text-2xl font-semibold tracking-institutional text-foreground tabular-nums"
-                  >
-                    {fmtNumber(converted)}
-                  </motion.div>
-                </AnimatePresence>
+              <div className="mt-1 h-8 overflow-hidden" aria-live="polite" aria-busy={rateState.status === "loading"}>
+                {rateState.status === "loading" ? (
+                  <div className="h-7 w-40 animate-pulse rounded-md bg-muted-foreground/10" />
+                ) : rateState.status === "error" ? (
+                  <span className="text-sm font-medium text-destructive">—</span>
+                ) : (
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    <motion.div
+                      key={`${converted.toFixed(2)}-${receive}`}
+                      initial={{ y: 12, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -12, opacity: 0 }}
+                      transition={{ duration: 0.22, ease: [0.2, 0.8, 0.2, 1] }}
+                      className="text-2xl font-semibold tracking-institutional text-foreground tabular-nums"
+                    >
+                      {fmtNumber(converted)}
+                    </motion.div>
+                  </AnimatePresence>
+                )}
               </div>
             </div>
             <CurrencySelect
@@ -188,7 +289,6 @@ export function SendMoneyCalculator() {
               options={RECEIVE_CURRENCIES}
               ariaLabel="Recipient currency"
             />
-
           </div>
         </div>
 
@@ -209,6 +309,32 @@ export function SendMoneyCalculator() {
               </div>
             </motion.div>
           )}
+          {rateState.status === "error" && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+              role="alert"
+              aria-live="assertive"
+            >
+              <div className="mt-2 flex items-center justify-between gap-2 rounded-xl border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive">
+                <span className="flex items-start gap-2">
+                  <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
+                  <span>{rateState.message}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={retry}
+                  className="inline-flex items-center gap-1 rounded-md border border-destructive/40 px-2 py-1 text-[11px] font-medium text-destructive transition-colors hover:bg-destructive/10"
+                >
+                  <RefreshCw className="h-3 w-3" strokeWidth={2} />
+                  Retry
+                </button>
+              </div>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
 
@@ -222,7 +348,13 @@ export function SendMoneyCalculator() {
         <div className="border-r border-border px-4 py-4">
           <dt className="text-muted-foreground">Rate</dt>
           <dd className="mt-1 font-medium text-foreground tabular-nums">
-            1 {send} = {rate.toFixed(4)} {receive}
+            {rateState.status === "loading" ? (
+              <span className="inline-block h-3.5 w-24 animate-pulse rounded bg-muted-foreground/10 align-middle" />
+            ) : rateState.status === "error" ? (
+              <span className="text-destructive">Unavailable</span>
+            ) : (
+              <>1 {send} = {rate.toFixed(4)} {receive}</>
+            )}
           </dd>
         </div>
         <div className="px-4 py-4">
@@ -269,7 +401,6 @@ function Row({
           aria-invalid={invalid}
           onChange={(e) => {
             const cleaned = e.target.value.replace(/[^0-9.,]/g, "");
-            // Prevent multiple decimal points
             const parts = cleaned.split(".");
             const safe = parts.length > 2 ? `${parts[0]}.${parts.slice(1).join("")}` : cleaned;
             onValue(safe);
@@ -283,7 +414,6 @@ function Row({
         options={options}
         ariaLabel={`${label} currency`}
       />
-
     </div>
   );
 }

@@ -80,9 +80,41 @@ export const NIUM_CURRENCIES: CurrencyMeta[] = [
   { code: "UGX", name: "Ugandan shilling", country: "ug" },
   { code: "UYU", name: "Uruguayan peso", country: "uy" },
   { code: "VND", name: "Vietnamese đồng", country: "vn", symbol: "₫" },
+  { code: "XAF", name: "Central African CFA franc", country: "cm" },
   { code: "XOF", name: "West African CFA franc", country: "sn" },
   { code: "ZAR", name: "South African rand", country: "za", symbol: "R" },
 ];
+
+/**
+ * Reference set of ISO-4217 codes documented as supported by the Nium global
+ * payouts network (public API docs). Used at runtime to validate that
+ * NIUM_CURRENCIES is in sync — mismatches log a warning in development.
+ */
+export const NIUM_REFERENCE_CODES: readonly string[] = [
+  "AED","AUD","BDT","BGN","BHD","BRL","CAD","CHF","CLP","CNY","COP","CZK",
+  "DKK","EGP","EUR","FJD","GBP","GEL","GHS","HKD","HRK","HUF","IDR","ILS",
+  "INR","JPY","KES","KRW","KWD","LKR","MAD","MXN","MYR","NGN","NOK","NPR",
+  "NZD","OMR","PEN","PHP","PKR","PLN","QAR","RON","RSD","SAR","SEK","SGD",
+  "THB","TND","TRY","TWD","TZS","UGX","USD","UYU","VND","XAF","XOF","ZAR",
+];
+
+export type CurrencyValidationResult = {
+  ok: boolean;
+  missing: string[]; // in Nium reference but absent from NIUM_CURRENCIES
+  extra: string[];   // present in NIUM_CURRENCIES but not in Nium reference
+  invalidCountry: string[]; // registry rows with malformed country codes
+};
+
+export function validateCurrencyRegistry(): CurrencyValidationResult {
+  const local = new Set(NIUM_CURRENCIES.map((c) => c.code));
+  const remote = new Set(NIUM_REFERENCE_CODES);
+  const missing = [...remote].filter((c) => !local.has(c)).sort();
+  const extra = [...local].filter((c) => !remote.has(c)).sort();
+  const invalidCountry = NIUM_CURRENCIES
+    .filter((c) => !/^[a-z]{2}$|^european_union$/.test(c.country))
+    .map((c) => c.code);
+  return { ok: missing.length === 0 && extra.length === 0 && invalidCountry.length === 0, missing, extra, invalidCountry };
+}
 
 const BY_CODE = new Map(NIUM_CURRENCIES.map((c) => [c.code, c]));
 
