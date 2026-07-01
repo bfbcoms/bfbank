@@ -1,5 +1,14 @@
 import "@testing-library/jest-dom/vitest";
 
+if (typeof globalThis.ResizeObserver === "undefined") {
+  class RO {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  (globalThis as unknown as { ResizeObserver: typeof RO }).ResizeObserver = RO;
+}
+
 // Radix Popover + cmdk use PointerEvent APIs jsdom doesn't implement.
 // Stub the ones they hit so click/keyboard interactions work in tests.
 if (typeof window !== "undefined") {
