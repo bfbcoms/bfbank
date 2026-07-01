@@ -4,6 +4,8 @@ import { MarketingLayout, PageHero } from "@/components/marketing/MarketingLayou
 import { SendMoneyCalculator } from "@/components/marketing/SendMoneyCalculator";
 import { ClosingCta } from "./personal";
 import { makeRouteMeta } from "@/lib/route-meta";
+import { CurrencyBadge } from "@/components/CurrencyFlag";
+
 
 export const Route = createFileRoute("/transfers")({
   head: () =>
