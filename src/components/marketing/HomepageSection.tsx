@@ -105,28 +105,27 @@ export function HomepageSection({
 
         {imageUrl && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.94, y: 20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1] }}
-            className="relative"
+            transition={{ duration: 0.8, ease: [0.2, 0.8, 0.2, 1] }}
+            className="relative flex items-center justify-center"
           >
-            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-secondary shadow-[0_40px_100px_-40px_rgba(0,0,0,0.7)]">
-              <div className="aspect-[4/3] w-full">
-                <img
-                  src={imageUrl}
-                  alt={imageAlt ?? title ?? "Bright Future Bank"}
-                  width={1280}
-                  height={960}
-                  loading="lazy"
-                  className="size-full object-cover"
-                />
-              </div>
-              <div className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-primary/10" />
-            </div>
             <div
               aria-hidden
-              className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-primary/5 blur-2xl"
+              className="pointer-events-none absolute inset-x-8 bottom-6 h-10 rounded-[50%] bg-black/40 blur-2xl"
+            />
+            <motion.img
+              src={imageUrl}
+              alt={imageAlt ?? title ?? "Bright Future Bank"}
+              width={1280}
+              height={960}
+              loading="lazy"
+              className="relative w-full max-w-[560px] select-none object-contain drop-shadow-[0_40px_60px_rgba(219,177,73,0.18)]"
+              animate={{ y: [0, -14, 0], rotate: [0, 0.6, 0] }}
+              transition={{ duration: 7, ease: "easeInOut", repeat: Infinity }}
+              whileHover={{ scale: 1.03, rotate: -1 }}
+              draggable={false}
             />
           </motion.div>
         )}
