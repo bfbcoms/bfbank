@@ -37,7 +37,7 @@ export const Route = createFileRoute("/")({
       description:
         "Multi-currency accounts, real exchange-rate transfers and institutional-grade security. Open a Bright Future account in minutes.",
       path: "/",
-      ogImage: homeVirtualAccounts.url,
+      ogImage: homeVirtualAccounts,
     }),
   component: HomePage,
 });
