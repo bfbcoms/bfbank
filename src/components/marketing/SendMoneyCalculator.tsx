@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDownUp, AlertCircle, Check, ChevronDown, RefreshCw } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Command,
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/command";
 import { CurrencyFlag } from "@/components/CurrencyFlag";
 import { cn } from "@/lib/utils";
+import { getNiumRate } from "@/lib/nium-rates.functions";
 import {
   NIUM_CURRENCIES,
   SEND_CURRENCY_CODES,
@@ -23,7 +25,7 @@ import {
  * Searchable currency picker: type-to-filter by code or name, arrow-key
  * navigation, Enter to select, Esc to close.
  */
-function CurrencySelect({
+export function CurrencySelect({
   value,
   onChange,
   options,
