@@ -1,18 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Fingerprint, KeyRound, Lock, ShieldCheck, ServerCog, Eye } from "lucide-react";
 import { MarketingLayout, PageHero } from "@/components/marketing/MarketingLayout";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/security")({
-  head: () => ({
-    meta: [
-      { title: "Security & compliance — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "How Bright Future protects your money and data: 2FA, biometric login, AES-256 encryption, SCA, safeguarded funds and independent audits.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "Security & compliance — Bright Future Bank",
+      description: "How Bright Future protects your money and data: 2FA, biometric login, AES-256 encryption, SCA, safeguarded funds and independent audits.",
+      path: "/security",
+    }),
   component: SecurityPage,
 });
 

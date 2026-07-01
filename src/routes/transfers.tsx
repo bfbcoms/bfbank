@@ -3,18 +3,15 @@ import { Zap, Route as RouteIcon, ShieldCheck } from "lucide-react";
 import { MarketingLayout, PageHero } from "@/components/marketing/MarketingLayout";
 import { SendMoneyCalculator } from "@/components/marketing/SendMoneyCalculator";
 import { ClosingCta } from "./personal";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/transfers")({
-  head: () => ({
-    meta: [
-      { title: "Cross-border transfers — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "Send money to 40+ currencies at the real exchange rate. Most transfers arrive in seconds, all tracked live inside your account.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "Cross-border transfers — Bright Future Bank",
+      description: "Send money to 40+ currencies at the real exchange rate. Most transfers arrive in seconds, all tracked live inside your account.",
+      path: "/transfers",
+    }),
   component: TransfersPage,
 });
 

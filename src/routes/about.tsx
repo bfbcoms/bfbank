@@ -1,18 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MarketingLayout, PageHero } from "@/components/marketing/MarketingLayout";
 import { ClosingCta } from "./personal";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "About — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "Bright Future Bank is building the operating account for the world's next billion cross-border earners, spenders and businesses.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "About — Bright Future Bank",
+      description: "Bright Future Bank is building the operating account for the world's next billion cross-border earners, spenders and businesses.",
+      path: "/about",
+    }),
   component: AboutPage,
 });
 

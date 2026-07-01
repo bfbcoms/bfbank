@@ -79,27 +79,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { name: "theme-color", content: "#dbb149" },
+      { name: "theme-color", content: "#000000" },
       { title: "Bright Future Bank — Cross-border banking, redefined" },
       {
         name: "description",
         content:
-          "Bright Future Bank is a modern cross-border neobank offering multi-currency accounts, instant transfers and institutional-grade security.",
+          "Multi-currency accounts, instant global transfers and institutional-grade controls — engineered for people and businesses that move across borders.",
       },
       { name: "author", content: "Bright Future Bank" },
-      { property: "og:title", content: "Bright Future Bank — Cross-border banking, redefined" },
-      {
-        property: "og:description",
-        content: "Cross-border banking, built for a brighter future.",
-      },
+      { property: "og:site_name", content: "Bright Future Bank" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Bright Future Bank — Cross-border banking, redefined" },
-      { name: "description", content: "Multi-currency accounts, instant global transfers and institutional-grade controls — engineered for people and businesses that move across borders." },
-      { property: "og:description", content: "Multi-currency accounts, instant global transfers and institutional-grade controls — engineered for people and businesses that move across borders." },
-      { name: "twitter:description", content: "Multi-currency accounts, instant global transfers and institutional-grade controls — engineered for people and businesses that move across borders." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/743266bf-86a2-4ea5-af14-bc780481ae0b" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/743266bf-86a2-4ea5-af14-bc780481ae0b" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -111,6 +101,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Bright Future Bank",
+          url: "https://bfbank.lovable.app",
+          logo: "https://bfbank.lovable.app/icons/icon-512.png",
+          sameAs: [],
+        }),
       },
     ],
   }),

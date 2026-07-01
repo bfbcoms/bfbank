@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 
 const primaryNav = [
@@ -15,6 +15,9 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const drawerRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const closeRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -28,8 +31,44 @@ export function SiteHeader() {
   }, [pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = drawerOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (!drawerOpen) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    document.body.style.overflow = "hidden";
+    // Move focus into the drawer for screen readers / keyboard users
+    requestAnimationFrame(() => closeRef.current?.focus());
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setDrawerOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const root = drawerRef.current;
+      if (!root) return;
+      const focusables = Array.from(
+        root.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el) => !el.hasAttribute("aria-hidden") && el.offsetParent !== null);
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+      previouslyFocused?.focus?.();
+    };
   }, [drawerOpen]);
 
   return (
@@ -42,8 +81,8 @@ export function SiteHeader() {
         }`}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          <Link to="/" className="flex items-center gap-3">
-            <span className="grid h-8 w-8 place-items-center bg-secondary text-primary text-sm font-semibold">
+          <Link to="/" className="flex items-center gap-3" aria-label="Bright Future Bank home">
+            <span aria-hidden className="grid h-8 w-8 place-items-center bg-secondary text-primary text-sm font-semibold">
               B
             </span>
             <span className="text-sm font-medium tracking-institutional uppercase">
@@ -51,13 +90,14 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-8 lg:flex">
+          <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
             {primaryNav.map((item) => {
               const active = pathname === item.to;
               return (
                 <Link
                   key={item.to}
                   to={item.to}
+                  aria-current={active ? "page" : undefined}
                   className={`text-sm transition-colors ${
                     active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
@@ -82,12 +122,15 @@ export function SiteHeader() {
               Get started
             </Link>
             <button
+              ref={triggerRef}
               type="button"
               onClick={() => setDrawerOpen(true)}
-              aria-label="Open menu"
+              aria-label="Open navigation menu"
+              aria-expanded={drawerOpen}
+              aria-controls="mobile-nav-drawer"
               className="grid h-11 w-11 place-items-center border border-border text-foreground lg:hidden"
             >
-              <Menu className="h-5 w-5" strokeWidth={1.5} />
+              <Menu className="h-5 w-5" strokeWidth={1.5} aria-hidden />
             </button>
           </div>
         </div>
@@ -103,8 +146,14 @@ export function SiteHeader() {
             drawerOpen ? "opacity-100" : "opacity-0"
           }`}
           onClick={() => setDrawerOpen(false)}
+          aria-hidden
         />
         <aside
+          id="mobile-nav-drawer"
+          ref={drawerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
           className={`absolute inset-y-0 right-0 flex w-full max-w-sm flex-col bg-secondary text-secondary-foreground transition-transform duration-300 ease-out ${
             drawerOpen ? "translate-x-0" : "translate-x-full"
           }`}
@@ -112,16 +161,17 @@ export function SiteHeader() {
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
             <span className="text-xs uppercase tracking-[0.3em] text-primary">Menu</span>
             <button
+              ref={closeRef}
               type="button"
               onClick={() => setDrawerOpen(false)}
-              aria-label="Close menu"
+              aria-label="Close navigation menu"
               className="grid h-11 w-11 place-items-center border border-white/15"
             >
-              <X className="h-5 w-5" strokeWidth={1.5} />
+              <X className="h-5 w-5" strokeWidth={1.5} aria-hidden />
             </button>
           </div>
 
-          <nav className="flex-1 overflow-y-auto px-6 py-8">
+          <nav className="flex-1 overflow-y-auto px-6 py-8" aria-label="Mobile primary">
             <ul className="space-y-1">
               {primaryNav.map((item) => (
                 <li key={item.to}>
@@ -130,7 +180,7 @@ export function SiteHeader() {
                     className="flex items-center justify-between border-b border-white/5 py-4 text-xl font-semibold tracking-institutional transition-colors hover:text-primary"
                   >
                     {item.label}
-                    <ArrowUpRight className="h-5 w-5 opacity-40" strokeWidth={1.5} />
+                    <ArrowUpRight className="h-5 w-5 opacity-40" strokeWidth={1.5} aria-hidden />
                   </Link>
                 </li>
               ))}
@@ -140,7 +190,7 @@ export function SiteHeader() {
                   className="flex items-center justify-between border-b border-white/5 py-4 text-xl font-semibold tracking-institutional transition-colors hover:text-primary"
                 >
                   Help centre
-                  <ArrowUpRight className="h-5 w-5 opacity-40" strokeWidth={1.5} />
+                  <ArrowUpRight className="h-5 w-5 opacity-40" strokeWidth={1.5} aria-hidden />
                 </Link>
               </li>
               <li>
@@ -149,7 +199,7 @@ export function SiteHeader() {
                   className="flex items-center justify-between border-b border-white/5 py-4 text-xl font-semibold tracking-institutional transition-colors hover:text-primary"
                 >
                   About
-                  <ArrowUpRight className="h-5 w-5 opacity-40" strokeWidth={1.5} />
+                  <ArrowUpRight className="h-5 w-5 opacity-40" strokeWidth={1.5} aria-hidden />
                 </Link>
               </li>
             </ul>

@@ -1,17 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalDocument } from "@/components/marketing/LegalDocument";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/legal/privacy")({
-  head: () => ({
-    meta: [
-      { title: "Privacy notice — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "How Bright Future Bank collects, uses and safeguards your personal information across our accounts, cards and transfer services.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "Privacy notice — Bright Future Bank",
+      description: "How Bright Future Bank collects, uses and safeguards your personal information across our accounts, cards and transfer services.",
+      path: "/legal/privacy",
+    }),
   component: PrivacyPage,
 });
 

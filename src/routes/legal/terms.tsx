@@ -1,17 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalDocument } from "@/components/marketing/LegalDocument";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/legal/terms")({
-  head: () => ({
-    meta: [
-      { title: "Terms of service — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "The terms of service that govern your use of Bright Future Bank accounts, cards and cross-border transfer services.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "Terms of service — Bright Future Bank",
+      description: "The terms of service that govern your use of Bright Future Bank accounts, cards and cross-border transfer services.",
+      path: "/legal/terms",
+    }),
   component: TermsPage,
 });
 
