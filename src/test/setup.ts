@@ -1,6 +1,8 @@
 import "@testing-library/jest-dom/vitest";
 import { vi } from "vitest";
 
+(globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+
 class RO {
   observe() {}
   unobserve() {}
