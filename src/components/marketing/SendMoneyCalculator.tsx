@@ -118,7 +118,7 @@ export function SendMoneyCalculator() {
     new Intl.NumberFormat("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
 
   const swap = () => {
-    if (SEND_CURRENCIES.includes(receive)) {
+    if ((SEND_CURRENCIES as readonly string[]).includes(receive)) {
       const next = receive;
       setReceive(send);
       setSend(next);
