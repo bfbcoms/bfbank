@@ -2,18 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Building2, Users2, FileText, Coins } from "lucide-react";
 import { MarketingLayout, PageHero } from "@/components/marketing/MarketingLayout";
 import { ClosingCta } from "./personal";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/business")({
-  head: () => ({
-    meta: [
-      { title: "Business banking — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "Multi-currency business accounts, contractor payouts, expense cards and invoicing — built for founders, SMEs and international teams.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "Business banking — Bright Future Bank",
+      description: "Multi-currency business accounts, contractor payouts, expense cards and invoicing — built for founders, SMEs and international teams.",
+      path: "/business",
+    }),
   component: BusinessPage,
 });
 

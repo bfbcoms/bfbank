@@ -2,18 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Search, Plus, Minus } from "lucide-react";
 import { MarketingLayout, PageHero } from "@/components/marketing/MarketingLayout";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/help")({
-  head: () => ({
-    meta: [
-      { title: "Help centre — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "Answers to common questions about opening an account, sending money, cards, security and business banking with Bright Future.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "Help centre — Bright Future Bank",
+      description: "Answers to common questions about opening an account, sending money, cards, security and business banking with Bright Future.",
+      path: "/help",
+    }),
   component: HelpPage,
 });
 

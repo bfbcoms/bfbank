@@ -1,17 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalDocument } from "@/components/marketing/LegalDocument";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/legal/cardholder-agreement")({
-  head: () => ({
-    meta: [
-      { title: "Cardholder agreement — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "The cardholder agreement governing Bright Future Bank physical and virtual debit cards issued to eligible account holders.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "Cardholder agreement — Bright Future Bank",
+      description: "The cardholder agreement governing Bright Future Bank physical and virtual debit cards issued to eligible account holders.",
+      path: "/legal/cardholder-agreement",
+    }),
   component: CardholderPage,
 });
 

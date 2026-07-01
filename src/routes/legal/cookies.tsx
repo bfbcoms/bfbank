@@ -1,17 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalDocument } from "@/components/marketing/LegalDocument";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/legal/cookies")({
-  head: () => ({
-    meta: [
-      { title: "Cookies notice — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "How Bright Future Bank uses cookies and similar technologies on our website and web platform, and how you can manage your preferences.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "Cookies notice — Bright Future Bank",
+      description: "How Bright Future Bank uses cookies and similar technologies on our website and web platform, and how you can manage your preferences.",
+      path: "/legal/cookies",
+    }),
   component: CookiesPage,
 });
 

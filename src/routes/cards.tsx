@@ -2,18 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Snowflake, Smartphone, Globe, Shield } from "lucide-react";
 import { MarketingLayout, PageHero } from "@/components/marketing/MarketingLayout";
 import { ClosingCta } from "./personal";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/cards")({
-  head: () => ({
-    meta: [
-      { title: "Virtual & physical cards — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "Freeze in one tap. Spend in over 150 countries. Bright Future virtual and physical cards ship with Apple Pay, Google Pay and instant merchant controls.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "Virtual & physical cards — Bright Future Bank",
+      description: "Freeze in one tap. Spend in over 150 countries. Bright Future virtual and physical cards ship with Apple Pay, Google Pay and instant merchant controls.",
+      path: "/cards",
+    }),
   component: CardsPage,
 });
 

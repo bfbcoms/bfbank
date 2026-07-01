@@ -1,18 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Eye, EyeOff, ShieldCheck, User, Building2 } from "lucide-react";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/signup")({
-  head: () => ({
-    meta: [
-      { title: "Open an account — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "Open a Bright Future Bank account in minutes. Multi-currency, real exchange rates, institutional-grade security.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "Open an account — Bright Future Bank",
+      description: "Open a Bright Future Bank account in minutes. Multi-currency, real exchange rates, institutional-grade security.",
+      path: "/signup",
+    }),
   component: SignupPage,
 });
 

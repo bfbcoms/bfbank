@@ -1,18 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Plane, Home, Coffee, Smartphone, ArrowUpRight } from "lucide-react";
 import { MarketingLayout, PageHero } from "@/components/marketing/MarketingLayout";
+import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/personal")({
-  head: () => ({
-    meta: [
-      { title: "Personal banking — Bright Future Bank" },
-      {
-        name: "description",
-        content:
-          "A modern personal account for travellers, expats and everyday spenders. Hold 40+ currencies, spend abroad at the real rate and get paid like a local.",
-      },
-    ],
-  }),
+  head: () =>
+    makeRouteMeta({
+      title: "Personal banking — Bright Future Bank",
+      description: "A modern personal account for travellers, expats and everyday spenders. Hold 40+ currencies, spend abroad at the real rate and get paid like a local.",
+      path: "/personal",
+    }),
   component: PersonalPage,
 });
 
