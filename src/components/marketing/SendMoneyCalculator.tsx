@@ -151,16 +151,17 @@ async function fetchRate(
   return { rate: crossRate(from, to), source: "fallback" };
 }
 
+const SEND_CURRENCIES = SEND_CURRENCY_CODES;
 const RECEIVE_CURRENCIES = RECEIVE_CURRENCY_CODES;
 
 const FEE_RATE = 0.0035; // 0.35%
 const MAX_AMOUNT = 250_000;
 const MIN_AMOUNT = 1;
-const RATE_TIMEOUT_MS = 3000;
+const RATE_TIMEOUT_MS = 5000;
 
 type RateState =
   | { status: "loading" }
-  | { status: "ready"; rate: number }
+  | { status: "ready"; rate: number; source: "nium" | "fallback" }
   | { status: "error"; message: string };
 
 export function SendMoneyCalculator() {
@@ -170,6 +171,7 @@ export function SendMoneyCalculator() {
   const [rateState, setRateState] = useState<RateState>({ status: "loading" });
   const [reloadKey, setReloadKey] = useState(0);
   const attemptRef = useRef(0);
+  const niumFetch = useServerFn(getNiumRate);
 
   const numeric = Number(amount.replace(/,/g, "")) || 0;
 
@@ -187,10 +189,10 @@ export function SendMoneyCalculator() {
     const attempt = ++attemptRef.current;
     setRateState({ status: "loading" });
     const timeoutId = setTimeout(() => controller.abort(), RATE_TIMEOUT_MS);
-    fetchRate(send, receive, controller.signal)
-      .then((rate) => {
+    fetchRate(send, receive, controller.signal, niumFetch)
+      .then((result) => {
         if (attempt !== attemptRef.current) return;
-        setRateState({ status: "ready", rate });
+        setRateState({ status: "ready", rate: result.rate, source: result.source });
       })
       .catch((err: unknown) => {
         if (attempt !== attemptRef.current) return;
