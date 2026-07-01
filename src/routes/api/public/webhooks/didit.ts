@@ -53,7 +53,7 @@ export const Route = createFileRoute("/api/public/webhooks/didit")({
             didit_status: mapped,
             rejection_reason: mapped === "rejected" ? (payload.reason ?? "Not disclosed") : null,
             completed_at: mapped !== "pending" ? new Date().toISOString() : null,
-            raw_payload: payload as unknown as Record<string, unknown>,
+            raw_payload: payload as never,
           })
           .eq("didit_session_id", payload.session_id)
           .select("user_id")
