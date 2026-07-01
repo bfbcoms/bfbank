@@ -1,7 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { LayoutDashboard, Wallet, CreditCard, ArrowUpRight, Settings } from "lucide-react";
+import { LayoutDashboard, Wallet, CreditCard, ArrowUpRight, Settings, ShieldCheck } from "lucide-react";
 import { InstallAppBanner } from "@/components/InstallAppBanner";
+import { useIsStaff } from "@/hooks/use-is-staff";
 
 const nav = [
   { to: "/app/dashboard", label: "Home", icon: LayoutDashboard },
