@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { CurrencyFlag } from "@/components/CurrencyFlag";
+
 
 export const Route = createFileRoute("/_authenticated/app/dashboard")({
   component: DashboardHome,
