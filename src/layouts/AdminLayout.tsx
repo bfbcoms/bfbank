@@ -1,10 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Gauge, Users, FileSearch, Mail, Smartphone, LayoutTemplate } from "lucide-react";
+import { Gauge, Users, FileSearch, Mail, Smartphone, LayoutTemplate, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const nav = [
   { to: "/admin", label: "Overview", icon: Gauge },
+  { to: "/admin/kyc", label: "KYC queue", icon: ShieldCheck },
   { to: "/admin/homepage", label: "Homepage CMS", icon: LayoutTemplate },
   { to: "/admin/roles", label: "User roles", icon: Users },
   { to: "/admin/audit", label: "Audit log", icon: FileSearch },

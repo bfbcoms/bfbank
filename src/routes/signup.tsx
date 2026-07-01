@@ -1,24 +1,70 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Eye, EyeOff, ShieldCheck, User, Building2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, ShieldCheck, User, Building2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/signup")({
   head: () =>
     makeRouteMeta({
       title: "Open an account — Bright Future Bank",
-      description: "Open a Bright Future Bank account in minutes. Multi-currency, real exchange rates, institutional-grade security.",
+      description:
+        "Open a Bright Future Bank account in minutes. Multi-currency, real exchange rates, institutional-grade security.",
       path: "/signup",
     }),
   component: SignupPage,
 });
 
-type AccountType = "personal" | "business" | null;
+type AccountType = "individual" | "business";
 
 function SignupPage() {
+  const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2>(1);
   const [showPassword, setShowPassword] = useState(false);
-  const [accountType, setAccountType] = useState<AccountType>(null);
+  const [accountType, setAccountType] = useState<AccountType | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [checkEmail, setCheckEmail] = useState(false);
+
+  async function completeSignup() {
+    if (!accountType) return;
+    setLoading(true);
+    setError(null);
+
+    const redirectTo =
+      typeof window !== "undefined" ? `${window.location.origin}/onboarding` : undefined;
+
+    const { data, error: authErr } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectTo,
+        data: { account_type: accountType },
+      },
+    });
+    setLoading(false);
+
+    if (authErr) {
+      setError(authErr.message);
+      return;
+    }
+
+    // Signup trigger seeds profiles; make sure account_type reflects the choice.
+    if (data.user) {
+      await supabase
+        .from("profiles")
+        .update({ account_type: accountType })
+        .eq("id", data.user.id);
+    }
+
+    if (data.session) {
+      navigate({ to: "/onboarding" });
+    } else {
+      setCheckEmail(true);
+    }
+  }
 
   return (
     <main className="grid min-h-screen bg-background text-foreground md:grid-cols-[1.1fr_1fr] lg:grid-cols-[1fr_1fr]">
@@ -69,133 +115,185 @@ function SignupPage() {
             ← Back to homepage
           </Link>
 
-          <div className="mt-8 flex items-center gap-2">
-            <StepPill n={1} active={step === 1} done={step > 1} label="Credentials" />
-            <span className="h-px flex-1 bg-border" aria-hidden />
-            <StepPill n={2} active={step === 2} done={false} label="Account type" />
-          </div>
-
-          {step === 1 && (
-            <div className="mt-8">
-              <h1 className="text-3xl font-semibold tracking-institutional">
-                Create your account
-              </h1>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Start with your email and a strong password. We'll take it from there.
+          {checkEmail ? (
+            <div className="mt-10">
+              <h1 className="text-3xl font-semibold tracking-institutional">Check your inbox</h1>
+              <p className="mt-3 text-sm text-muted-foreground">
+                We just sent a verification link to{" "}
+                <span className="text-foreground">{email}</span>. Click it to activate your
+                account and finish setup.
               </p>
-
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setStep(2);
-                }}
-                className="mt-8 space-y-5"
+              <Link
+                to="/login"
+                className="mt-8 inline-flex h-12 w-full items-center justify-center bg-primary text-sm font-medium tracking-institutional uppercase text-primary-foreground hover:bg-primary/90"
               >
-                <div>
-                  <label className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="you@company.com"
-                    autoComplete="email"
-                    className="h-12 w-full border-b border-border bg-transparent px-0 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      required
-                      minLength={10}
-                      placeholder="At least 10 characters"
-                      autoComplete="new-password"
-                      className="h-12 w-full border-b border-border bg-transparent px-0 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((v) => !v)}
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" strokeWidth={1.5} />
-                      ) : (
-                        <Eye className="h-4 w-4" strokeWidth={1.5} />
-                      )}
-                    </button>
-                  </div>
-                  <p className="mt-2 text-[11px] text-muted-foreground">
-                    Use at least 10 characters, mixing letters, numbers and symbols.
-                  </p>
-                </div>
-
-                <button
-                  type="submit"
-                  className="mt-4 inline-flex h-12 w-full items-center justify-center bg-primary text-sm font-medium tracking-institutional uppercase text-primary-foreground transition-all hover:bg-primary/90"
-                >
-                  Continue
-                </button>
-              </form>
+                Back to log in
+              </Link>
             </div>
-          )}
-
-          {step === 2 && (
-            <div className="mt-8">
-              <h1 className="text-3xl font-semibold tracking-institutional">
-                Personal or business?
-              </h1>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Choose the type of account you'd like to open. You can add the other
-                later.
-              </p>
-
-              <div className="mt-8 grid gap-3">
-                <TypeCard
-                  icon={User}
-                  active={accountType === "personal"}
-                  onSelect={() => setAccountType("personal")}
-                  title="Personal"
-                  body="For individuals, travellers and expats. Multi-currency wallet, cards and transfers."
-                />
-                <TypeCard
-                  icon={Building2}
-                  active={accountType === "business"}
-                  onSelect={() => setAccountType("business")}
-                  title="Business"
-                  body="For companies, freelancers and international teams. Team cards and contractor payouts."
-                />
+          ) : (
+            <>
+              <div className="mt-8 flex items-center gap-2">
+                <StepPill n={1} active={step === 1} done={step > 1} label="Credentials" />
+                <span className="h-px flex-1 bg-border" aria-hidden />
+                <StepPill n={2} active={step === 2} done={false} label="Account type" />
               </div>
 
-              <button
-                type="button"
-                disabled={!accountType}
-                className="mt-8 inline-flex h-12 w-full items-center justify-center bg-primary text-sm font-medium tracking-institutional uppercase text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-40"
-              >
-                Continue to verification
-              </button>
+              {step === 1 && (
+                <div className="mt-8">
+                  <h1 className="text-3xl font-semibold tracking-institutional">
+                    Create your account
+                  </h1>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Start with your email and a strong password. We'll take it from there.
+                  </p>
 
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="mt-4 block w-full text-center text-xs uppercase tracking-[0.25em] text-muted-foreground hover:text-foreground"
-              >
-                ← Back
-              </button>
-            </div>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      setError(null);
+                      if (password.length < 10) {
+                        setError("Password must be at least 10 characters.");
+                        return;
+                      }
+                      setStep(2);
+                    }}
+                    className="mt-8 space-y-5"
+                  >
+                    <div>
+                      <label className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@company.com"
+                        autoComplete="email"
+                        className="h-12 w-full border-b border-border bg-transparent px-0 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+                        Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          required
+                          minLength={10}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="At least 10 characters"
+                          autoComplete="new-password"
+                          className="h-12 w-full border-b border-border bg-transparent px-0 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword((v) => !v)}
+                          aria-label={showPassword ? "Hide password" : "Show password"}
+                          className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" strokeWidth={1.5} />
+                          ) : (
+                            <Eye className="h-4 w-4" strokeWidth={1.5} />
+                          )}
+                        </button>
+                      </div>
+                      <p className="mt-2 text-[11px] text-muted-foreground">
+                        Use at least 10 characters, mixing letters, numbers and symbols.
+                      </p>
+                    </div>
+
+                    {error && (
+                      <div
+                        role="alert"
+                        className="border-l-2 border-red-500 bg-red-500/5 px-3 py-2 text-xs text-red-500"
+                      >
+                        {error}
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      className="mt-4 inline-flex h-12 w-full items-center justify-center bg-primary text-sm font-medium tracking-institutional uppercase text-primary-foreground transition-all hover:bg-primary/90"
+                    >
+                      Continue
+                    </button>
+                  </form>
+                </div>
+              )}
+
+              {step === 2 && (
+                <div className="mt-8">
+                  <h1 className="text-3xl font-semibold tracking-institutional">
+                    Personal or business?
+                  </h1>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Choose the type of account you'd like to open. You can add the other later.
+                  </p>
+
+                  <div className="mt-8 grid gap-3">
+                    <TypeCard
+                      icon={User}
+                      active={accountType === "individual"}
+                      onSelect={() => setAccountType("individual")}
+                      title="Personal"
+                      body="For individuals, travellers and expats. Multi-currency wallet, cards and transfers."
+                    />
+                    <TypeCard
+                      icon={Building2}
+                      active={accountType === "business"}
+                      onSelect={() => setAccountType("business")}
+                      title="Business"
+                      body="For companies, freelancers and international teams. Team cards and contractor payouts."
+                    />
+                  </div>
+
+                  {error && (
+                    <div
+                      role="alert"
+                      className="mt-6 border-l-2 border-red-500 bg-red-500/5 px-3 py-2 text-xs text-red-500"
+                    >
+                      {error}
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    disabled={!accountType || loading}
+                    onClick={completeSignup}
+                    className="mt-8 inline-flex h-12 w-full items-center justify-center bg-primary text-sm font-medium tracking-institutional uppercase text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-40"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating account…
+                      </>
+                    ) : (
+                      "Continue to verification"
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setStep(1)}
+                    className="mt-4 block w-full text-center text-xs uppercase tracking-[0.25em] text-muted-foreground hover:text-foreground"
+                  >
+                    ← Back
+                  </button>
+                </div>
+              )}
+
+              <p className="mt-8 text-xs text-muted-foreground">
+                Already have an account?{" "}
+                <Link to="/login" className="text-foreground hover:text-primary">
+                  Log in →
+                </Link>
+              </p>
+            </>
           )}
-
-          <p className="mt-8 text-xs text-muted-foreground">
-            Already have an account?{" "}
-            <Link to="/login" className="text-foreground hover:text-primary">
-              Log in →
-            </Link>
-          </p>
         </div>
       </section>
     </main>
@@ -253,9 +351,7 @@ function TypeCard({
       type="button"
       onClick={onSelect}
       className={`flex items-start gap-4 border p-5 text-left transition-colors ${
-        active
-          ? "border-primary bg-primary/5"
-          : "border-border hover:border-foreground"
+        active ? "border-primary bg-primary/5" : "border-border hover:border-foreground"
       }`}
     >
       <Icon

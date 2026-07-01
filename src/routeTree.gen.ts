@@ -14,10 +14,12 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PersonalRouteImport } from './routes/personal'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as CardsRouteImport } from './routes/cards'
 import { Route as BusinessRouteImport } from './routes/business'
+import { Route as AccountRestrictedRouteImport } from './routes/account-restricted'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -29,6 +31,7 @@ import { Route as LegalCookiesRouteImport } from './routes/legal/cookies'
 import { Route as LegalCardholderAgreementRouteImport } from './routes/legal/cardholder-agreement'
 import { Route as AdminTemplatesRouteImport } from './routes/admin/templates'
 import { Route as AdminRolesRouteImport } from './routes/admin/roles'
+import { Route as AdminKycRouteImport } from './routes/admin/kyc'
 import { Route as AdminHomepageRouteImport } from './routes/admin/homepage'
 import { Route as AdminDevicesRouteImport } from './routes/admin/devices'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
@@ -37,6 +40,7 @@ import { Route as AuthenticatedAppSendMoneyRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppDashboardRouteImport } from './routes/_authenticated/app.dashboard'
 import { Route as AuthenticatedAppCardsRouteImport } from './routes/_authenticated/app.cards'
 import { Route as AuthenticatedAppAccountsRouteImport } from './routes/_authenticated/app.accounts'
+import { Route as ApiPublicWebhooksDiditRouteImport } from './routes/api/public/webhooks/didit'
 
 const TransfersRoute = TransfersRouteImport.update({
   id: '/transfers',
@@ -63,6 +67,11 @@ const PersonalRoute = PersonalRouteImport.update({
   path: '/personal',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -81,6 +90,11 @@ const CardsRoute = CardsRouteImport.update({
 const BusinessRoute = BusinessRouteImport.update({
   id: '/business',
   path: '/business',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRestrictedRoute = AccountRestrictedRouteImport.update({
+  id: '/account-restricted',
+  path: '/account-restricted',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -138,6 +152,11 @@ const AdminRolesRoute = AdminRolesRouteImport.update({
   path: '/roles',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminKycRoute = AdminKycRouteImport.update({
+  id: '/kyc',
+  path: '/kyc',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminHomepageRoute = AdminHomepageRouteImport.update({
   id: '/homepage',
   path: '/homepage',
@@ -182,15 +201,22 @@ const AuthenticatedAppAccountsRoute =
     path: '/app/accounts',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicWebhooksDiditRoute = ApiPublicWebhooksDiditRouteImport.update({
+  id: '/api/public/webhooks/didit',
+  path: '/api/public/webhooks/didit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/account-restricted': typeof AccountRestrictedRoute
   '/business': typeof BusinessRoute
   '/cards': typeof CardsRoute
   '/help': typeof HelpRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/personal': typeof PersonalRoute
   '/pricing': typeof PricingRoute
   '/security': typeof SecurityRoute
@@ -199,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/homepage': typeof AdminHomepageRoute
+  '/admin/kyc': typeof AdminKycRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
@@ -211,14 +238,17 @@ export interface FileRoutesByFullPath {
   '/app/dashboard': typeof AuthenticatedAppDashboardRoute
   '/app/send-money': typeof AuthenticatedAppSendMoneyRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
+  '/api/public/webhooks/didit': typeof ApiPublicWebhooksDiditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account-restricted': typeof AccountRestrictedRoute
   '/business': typeof BusinessRoute
   '/cards': typeof CardsRoute
   '/help': typeof HelpRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/personal': typeof PersonalRoute
   '/pricing': typeof PricingRoute
   '/security': typeof SecurityRoute
@@ -227,6 +257,7 @@ export interface FileRoutesByTo {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/homepage': typeof AdminHomepageRoute
+  '/admin/kyc': typeof AdminKycRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
@@ -239,6 +270,7 @@ export interface FileRoutesByTo {
   '/app/dashboard': typeof AuthenticatedAppDashboardRoute
   '/app/send-money': typeof AuthenticatedAppSendMoneyRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
+  '/api/public/webhooks/didit': typeof ApiPublicWebhooksDiditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -246,10 +278,12 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/account-restricted': typeof AccountRestrictedRoute
   '/business': typeof BusinessRoute
   '/cards': typeof CardsRoute
   '/help': typeof HelpRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/personal': typeof PersonalRoute
   '/pricing': typeof PricingRoute
   '/security': typeof SecurityRoute
@@ -258,6 +292,7 @@ export interface FileRoutesById {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/homepage': typeof AdminHomepageRoute
+  '/admin/kyc': typeof AdminKycRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
@@ -270,6 +305,7 @@ export interface FileRoutesById {
   '/_authenticated/app/dashboard': typeof AuthenticatedAppDashboardRoute
   '/_authenticated/app/send-money': typeof AuthenticatedAppSendMoneyRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
+  '/api/public/webhooks/didit': typeof ApiPublicWebhooksDiditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -277,10 +313,12 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/about'
+    | '/account-restricted'
     | '/business'
     | '/cards'
     | '/help'
     | '/login'
+    | '/onboarding'
     | '/personal'
     | '/pricing'
     | '/security'
@@ -289,6 +327,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/homepage'
+    | '/admin/kyc'
     | '/admin/roles'
     | '/admin/templates'
     | '/legal/cardholder-agreement'
@@ -301,14 +340,17 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/send-money'
     | '/app/settings'
+    | '/api/public/webhooks/didit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/account-restricted'
     | '/business'
     | '/cards'
     | '/help'
     | '/login'
+    | '/onboarding'
     | '/personal'
     | '/pricing'
     | '/security'
@@ -317,6 +359,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/homepage'
+    | '/admin/kyc'
     | '/admin/roles'
     | '/admin/templates'
     | '/legal/cardholder-agreement'
@@ -329,16 +372,19 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/send-money'
     | '/app/settings'
+    | '/api/public/webhooks/didit'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/admin'
     | '/about'
+    | '/account-restricted'
     | '/business'
     | '/cards'
     | '/help'
     | '/login'
+    | '/onboarding'
     | '/personal'
     | '/pricing'
     | '/security'
@@ -347,6 +393,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/homepage'
+    | '/admin/kyc'
     | '/admin/roles'
     | '/admin/templates'
     | '/legal/cardholder-agreement'
@@ -359,6 +406,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/dashboard'
     | '/_authenticated/app/send-money'
     | '/_authenticated/app/settings'
+    | '/api/public/webhooks/didit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -366,10 +414,12 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  AccountRestrictedRoute: typeof AccountRestrictedRoute
   BusinessRoute: typeof BusinessRoute
   CardsRoute: typeof CardsRoute
   HelpRoute: typeof HelpRoute
   LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
   PersonalRoute: typeof PersonalRoute
   PricingRoute: typeof PricingRoute
   SecurityRoute: typeof SecurityRoute
@@ -379,6 +429,7 @@ export interface RootRouteChildren {
   LegalCookiesRoute: typeof LegalCookiesRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
+  ApiPublicWebhooksDiditRoute: typeof ApiPublicWebhooksDiditRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -418,6 +469,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PersonalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -444,6 +502,13 @@ declare module '@tanstack/react-router' {
       path: '/business'
       fullPath: '/business'
       preLoaderRoute: typeof BusinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account-restricted': {
+      id: '/account-restricted'
+      path: '/account-restricted'
+      fullPath: '/account-restricted'
+      preLoaderRoute: typeof AccountRestrictedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -523,6 +588,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRolesRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/kyc': {
+      id: '/admin/kyc'
+      path: '/kyc'
+      fullPath: '/admin/kyc'
+      preLoaderRoute: typeof AdminKycRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/homepage': {
       id: '/admin/homepage'
       path: '/homepage'
@@ -579,6 +651,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAccountsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/webhooks/didit': {
+      id: '/api/public/webhooks/didit'
+      path: '/api/public/webhooks/didit'
+      fullPath: '/api/public/webhooks/didit'
+      preLoaderRoute: typeof ApiPublicWebhooksDiditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -605,6 +684,7 @@ interface AdminRouteRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
   AdminDevicesRoute: typeof AdminDevicesRoute
   AdminHomepageRoute: typeof AdminHomepageRoute
+  AdminKycRoute: typeof AdminKycRoute
   AdminRolesRoute: typeof AdminRolesRoute
   AdminTemplatesRoute: typeof AdminTemplatesRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -614,6 +694,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
   AdminDevicesRoute: AdminDevicesRoute,
   AdminHomepageRoute: AdminHomepageRoute,
+  AdminKycRoute: AdminKycRoute,
   AdminRolesRoute: AdminRolesRoute,
   AdminTemplatesRoute: AdminTemplatesRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -628,10 +709,12 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  AccountRestrictedRoute: AccountRestrictedRoute,
   BusinessRoute: BusinessRoute,
   CardsRoute: CardsRoute,
   HelpRoute: HelpRoute,
   LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
   PersonalRoute: PersonalRoute,
   PricingRoute: PricingRoute,
   SecurityRoute: SecurityRoute,
@@ -641,6 +724,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalCookiesRoute: LegalCookiesRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
+  ApiPublicWebhooksDiditRoute: ApiPublicWebhooksDiditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

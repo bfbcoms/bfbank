@@ -6,10 +6,29 @@ import { useResponsiveShell } from "@/hooks/use-responsive-shell";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) throw redirect({ to: "/login" });
-    return { user: data.user };
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("status, account_type")
+      .eq("id", data.user.id)
+      .maybeSingle();
+
+    const status = profile?.status ?? "pending_kyc";
+    // Gate all app routes on KYC status.
+    if (status === "suspended" || status === "closed") {
+      if (!location.pathname.startsWith("/account-restricted")) {
+        throw redirect({ to: "/account-restricted" });
+      }
+    } else if (status !== "active") {
+      if (!location.pathname.startsWith("/onboarding")) {
+        throw redirect({ to: "/onboarding" });
+      }
+    }
+
+    return { user: data.user, profile };
   },
   component: AuthenticatedShell,
 });

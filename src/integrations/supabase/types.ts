@@ -73,6 +73,42 @@ export type Database = {
           },
         ]
       }
+      businesses: {
+        Row: {
+          business_type: string | null
+          company_name: string
+          country_of_incorporation: string
+          created_at: string
+          id: string
+          registration_number: string
+          updated_at: string
+          user_id: string
+          user_title: string | null
+        }
+        Insert: {
+          business_type?: string | null
+          company_name: string
+          country_of_incorporation: string
+          created_at?: string
+          id?: string
+          registration_number: string
+          updated_at?: string
+          user_id: string
+          user_title?: string | null
+        }
+        Update: {
+          business_type?: string | null
+          company_name?: string
+          country_of_incorporation?: string
+          created_at?: string
+          id?: string
+          registration_number?: string
+          updated_at?: string
+          user_id?: string
+          user_title?: string | null
+        }
+        Relationships: []
+      }
       email_templates: {
         Row: {
           created_at: string
@@ -154,6 +190,51 @@ export type Database = {
         }
         Relationships: []
       }
+      kyc_verifications: {
+        Row: {
+          account_type: Database["public"]["Enums"]["account_type"]
+          completed_at: string | null
+          didit_session_id: string | null
+          didit_status: Database["public"]["Enums"]["kyc_status"]
+          didit_verification_url: string | null
+          id: string
+          provider: string
+          raw_payload: Json | null
+          rejection_reason: string | null
+          submitted_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_type: Database["public"]["Enums"]["account_type"]
+          completed_at?: string | null
+          didit_session_id?: string | null
+          didit_status?: Database["public"]["Enums"]["kyc_status"]
+          didit_verification_url?: string | null
+          id?: string
+          provider?: string
+          raw_payload?: Json | null
+          rejection_reason?: string | null
+          submitted_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_type?: Database["public"]["Enums"]["account_type"]
+          completed_at?: string | null
+          didit_session_id?: string | null
+          didit_status?: Database["public"]["Enums"]["kyc_status"]
+          didit_verification_url?: string | null
+          id?: string
+          provider?: string
+          raw_payload?: Json | null
+          rejection_reason?: string | null
+          submitted_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notification_logs: {
         Row: {
           channel: Database["public"]["Enums"]["notif_channel"]
@@ -217,26 +298,56 @@ export type Database = {
       profiles: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"]
+          address_line: string | null
+          city: string | null
+          country: string | null
           created_at: string
+          date_of_birth: string | null
+          first_name: string | null
           full_name: string | null
           id: string
+          last_name: string | null
+          phone: string | null
+          postal_code: string | null
+          rejection_reason: string | null
           status: Database["public"]["Enums"]["account_status"]
+          title: string | null
           updated_at: string
         }
         Insert: {
           account_type?: Database["public"]["Enums"]["account_type"]
+          address_line?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          date_of_birth?: string | null
+          first_name?: string | null
           full_name?: string | null
           id: string
+          last_name?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          rejection_reason?: string | null
           status?: Database["public"]["Enums"]["account_status"]
+          title?: string | null
           updated_at?: string
         }
         Update: {
           account_type?: Database["public"]["Enums"]["account_type"]
+          address_line?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          date_of_birth?: string | null
+          first_name?: string | null
           full_name?: string | null
           id?: string
+          last_name?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          rejection_reason?: string | null
           status?: Database["public"]["Enums"]["account_status"]
+          title?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -308,6 +419,7 @@ export type Database = {
       account_type: "individual" | "business"
       app_role: "super_admin" | "compliance" | "support" | "customer"
       device_type: "ios" | "android" | "web"
+      kyc_status: "pending" | "approved" | "rejected" | "expired"
       notif_channel: "email" | "sms" | "push"
       notif_status: "queued" | "sent" | "delivered" | "failed" | "bounced"
       otp_provider: "vonage" | "fcm"
@@ -444,6 +556,7 @@ export const Constants = {
       account_type: ["individual", "business"],
       app_role: ["super_admin", "compliance", "support", "customer"],
       device_type: ["ios", "android", "web"],
+      kyc_status: ["pending", "approved", "rejected", "expired"],
       notif_channel: ["email", "sms", "push"],
       notif_status: ["queued", "sent", "delivered", "failed", "bounced"],
       otp_provider: ["vonage", "fcm"],
