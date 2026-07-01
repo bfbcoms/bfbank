@@ -15,18 +15,18 @@ import { SendMoneyCalculator } from "@/components/marketing/SendMoneyCalculator"
 import { HomepageSection } from "@/components/marketing/HomepageSection";
 import { homepageSectionsQuery, indexBySlug, type HomepageSection as Section } from "@/lib/homepage-content";
 import { makeRouteMeta } from "@/lib/route-meta";
-import homeVirtualAccounts from "@/assets/home-virtual-accounts.jpg.asset.json";
-import homeGlobalCards from "@/assets/home-global-cards.jpg.asset.json";
-import homeTransfers from "@/assets/home-transfers.jpg.asset.json";
+import homeVirtualAccounts from "@/assets/home-virtual-accounts.png";
+import homeGlobalCards from "@/assets/home-global-cards.png";
+import homeTransfers from "@/assets/home-transfers.png";
 
 const ICONS: Record<string, LucideIcon> = {
   ShieldCheck, Lock, Landmark, Wallet, CreditCard, Globe2,
 };
 
 const SECTION_IMAGES: Record<string, string> = {
-  virtual_accounts: homeVirtualAccounts.url,
-  global_cards: homeGlobalCards.url,
-  cross_border: homeTransfers.url,
+  virtual_accounts: homeVirtualAccounts,
+  global_cards: homeGlobalCards,
+  cross_border: homeTransfers,
 };
 
 export const Route = createFileRoute("/")({
