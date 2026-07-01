@@ -4,11 +4,11 @@ import { LayoutDashboard, Wallet, CreditCard, ArrowUpRight, Settings } from "luc
 import { InstallAppBanner } from "@/components/InstallAppBanner";
 
 const nav = [
-  { to: "/dashboard", label: "Home", icon: LayoutDashboard },
-  { to: "/accounts", label: "Accounts", icon: Wallet },
-  { to: "/send-money", label: "Send", icon: ArrowUpRight },
-  { to: "/cards", label: "Cards", icon: CreditCard },
-  { to: "/settings", label: "Profile", icon: Settings },
+  { to: "/app/dashboard", label: "Home", icon: LayoutDashboard },
+  { to: "/app/accounts", label: "Accounts", icon: Wallet },
+  { to: "/app/send-money", label: "Send", icon: ArrowUpRight },
+  { to: "/app/cards", label: "Cards", icon: CreditCard },
+  { to: "/app/settings", label: "Profile", icon: Settings },
 ] as const;
 
 export function PWALayout({ children }: { children: ReactNode }) {
