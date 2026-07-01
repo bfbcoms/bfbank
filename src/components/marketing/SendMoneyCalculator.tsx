@@ -268,16 +268,13 @@ function Row({
           className="mt-1 w-full bg-transparent text-2xl font-semibold tracking-institutional text-foreground tabular-nums focus:outline-none"
         />
       </div>
-      <select
+      <CurrencySelect
         value={currency}
-        onChange={(e) => onCurrency(e.target.value)}
-        aria-label={`${label} currency`}
-        className="h-11 shrink-0 rounded-xl border border-border bg-background px-3 text-sm font-medium tracking-institutional uppercase text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-      >
-        {options.map((o) => (
-          <option key={o} value={o}>{o}</option>
-        ))}
-      </select>
+        onChange={onCurrency}
+        options={options}
+        ariaLabel={`${label} currency`}
+      />
+
     </div>
   );
 }
