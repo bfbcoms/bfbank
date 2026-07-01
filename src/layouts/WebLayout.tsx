@@ -14,6 +14,7 @@ const nav = [
 
 export function WebLayout({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isStaff = useIsStaff();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
