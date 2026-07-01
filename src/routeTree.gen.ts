@@ -18,11 +18,11 @@ import { Route as AdminTemplatesRouteImport } from './routes/admin/templates'
 import { Route as AdminRolesRouteImport } from './routes/admin/roles'
 import { Route as AdminDevicesRouteImport } from './routes/admin/devices'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
-import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedSendMoneyRouteImport } from './routes/_authenticated/send-money'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedCardsRouteImport } from './routes/_authenticated/cards'
-import { Route as AuthenticatedAccountsRouteImport } from './routes/_authenticated/accounts'
+import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app.settings'
+import { Route as AuthenticatedAppSendMoneyRouteImport } from './routes/_authenticated/app.send-money'
+import { Route as AuthenticatedAppDashboardRouteImport } from './routes/_authenticated/app.dashboard'
+import { Route as AuthenticatedAppCardsRouteImport } from './routes/_authenticated/app.cards'
+import { Route as AuthenticatedAppAccountsRouteImport } from './routes/_authenticated/app.accounts'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -68,60 +68,64 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+const AuthenticatedAppSettingsRoute =
+  AuthenticatedAppSettingsRouteImport.update({
+    id: '/app/settings',
+    path: '/app/settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAppSendMoneyRoute =
+  AuthenticatedAppSendMoneyRouteImport.update({
+    id: '/app/send-money',
+    path: '/app/send-money',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAppDashboardRoute =
+  AuthenticatedAppDashboardRouteImport.update({
+    id: '/app/dashboard',
+    path: '/app/dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAppCardsRoute = AuthenticatedAppCardsRouteImport.update({
+  id: '/app/cards',
+  path: '/app/cards',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedSendMoneyRoute = AuthenticatedSendMoneyRouteImport.update({
-  id: '/send-money',
-  path: '/send-money',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedCardsRoute = AuthenticatedCardsRouteImport.update({
-  id: '/cards',
-  path: '/cards',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedAccountsRoute = AuthenticatedAccountsRouteImport.update({
-  id: '/accounts',
-  path: '/accounts',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+const AuthenticatedAppAccountsRoute =
+  AuthenticatedAppAccountsRouteImport.update({
+    id: '/app/accounts',
+    path: '/app/accounts',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/accounts': typeof AuthenticatedAccountsRoute
-  '/cards': typeof AuthenticatedCardsRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/send-money': typeof AuthenticatedSendMoneyRoute
-  '/settings': typeof AuthenticatedSettingsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/admin/': typeof AdminIndexRoute
+  '/app/accounts': typeof AuthenticatedAppAccountsRoute
+  '/app/cards': typeof AuthenticatedAppCardsRoute
+  '/app/dashboard': typeof AuthenticatedAppDashboardRoute
+  '/app/send-money': typeof AuthenticatedAppSendMoneyRoute
+  '/app/settings': typeof AuthenticatedAppSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/accounts': typeof AuthenticatedAccountsRoute
-  '/cards': typeof AuthenticatedCardsRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/send-money': typeof AuthenticatedSendMoneyRoute
-  '/settings': typeof AuthenticatedSettingsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/admin': typeof AdminIndexRoute
+  '/app/accounts': typeof AuthenticatedAppAccountsRoute
+  '/app/cards': typeof AuthenticatedAppCardsRoute
+  '/app/dashboard': typeof AuthenticatedAppDashboardRoute
+  '/app/send-money': typeof AuthenticatedAppSendMoneyRoute
+  '/app/settings': typeof AuthenticatedAppSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -129,16 +133,16 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/_authenticated/accounts': typeof AuthenticatedAccountsRoute
-  '/_authenticated/cards': typeof AuthenticatedCardsRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/send-money': typeof AuthenticatedSendMoneyRoute
-  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/admin/': typeof AdminIndexRoute
+  '/_authenticated/app/accounts': typeof AuthenticatedAppAccountsRoute
+  '/_authenticated/app/cards': typeof AuthenticatedAppCardsRoute
+  '/_authenticated/app/dashboard': typeof AuthenticatedAppDashboardRoute
+  '/_authenticated/app/send-money': typeof AuthenticatedAppSendMoneyRoute
+  '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -146,46 +150,46 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
-    | '/accounts'
-    | '/cards'
-    | '/dashboard'
-    | '/send-money'
-    | '/settings'
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/roles'
     | '/admin/templates'
     | '/admin/'
+    | '/app/accounts'
+    | '/app/cards'
+    | '/app/dashboard'
+    | '/app/send-money'
+    | '/app/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
-    | '/accounts'
-    | '/cards'
-    | '/dashboard'
-    | '/send-money'
-    | '/settings'
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/roles'
     | '/admin/templates'
     | '/admin'
+    | '/app/accounts'
+    | '/app/cards'
+    | '/app/dashboard'
+    | '/app/send-money'
+    | '/app/settings'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/admin'
     | '/auth'
-    | '/_authenticated/accounts'
-    | '/_authenticated/cards'
-    | '/_authenticated/dashboard'
-    | '/_authenticated/send-money'
-    | '/_authenticated/settings'
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/roles'
     | '/admin/templates'
     | '/admin/'
+    | '/_authenticated/app/accounts'
+    | '/_authenticated/app/cards'
+    | '/_authenticated/app/dashboard'
+    | '/_authenticated/app/send-money'
+    | '/_authenticated/app/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -260,58 +264,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuditRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+    '/_authenticated/app/settings': {
+      id: '/_authenticated/app/settings'
+      path: '/app/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AuthenticatedAppSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/send-money': {
-      id: '/_authenticated/send-money'
-      path: '/send-money'
-      fullPath: '/send-money'
-      preLoaderRoute: typeof AuthenticatedSendMoneyRouteImport
+    '/_authenticated/app/send-money': {
+      id: '/_authenticated/app/send-money'
+      path: '/app/send-money'
+      fullPath: '/app/send-money'
+      preLoaderRoute: typeof AuthenticatedAppSendMoneyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+    '/_authenticated/app/dashboard': {
+      id: '/_authenticated/app/dashboard'
+      path: '/app/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AuthenticatedAppDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/cards': {
-      id: '/_authenticated/cards'
-      path: '/cards'
-      fullPath: '/cards'
-      preLoaderRoute: typeof AuthenticatedCardsRouteImport
+    '/_authenticated/app/cards': {
+      id: '/_authenticated/app/cards'
+      path: '/app/cards'
+      fullPath: '/app/cards'
+      preLoaderRoute: typeof AuthenticatedAppCardsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/accounts': {
-      id: '/_authenticated/accounts'
-      path: '/accounts'
-      fullPath: '/accounts'
-      preLoaderRoute: typeof AuthenticatedAccountsRouteImport
+    '/_authenticated/app/accounts': {
+      id: '/_authenticated/app/accounts'
+      path: '/app/accounts'
+      fullPath: '/app/accounts'
+      preLoaderRoute: typeof AuthenticatedAppAccountsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAccountsRoute: typeof AuthenticatedAccountsRoute
-  AuthenticatedCardsRoute: typeof AuthenticatedCardsRoute
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedSendMoneyRoute: typeof AuthenticatedSendMoneyRoute
-  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedAppAccountsRoute: typeof AuthenticatedAppAccountsRoute
+  AuthenticatedAppCardsRoute: typeof AuthenticatedAppCardsRoute
+  AuthenticatedAppDashboardRoute: typeof AuthenticatedAppDashboardRoute
+  AuthenticatedAppSendMoneyRoute: typeof AuthenticatedAppSendMoneyRoute
+  AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAccountsRoute: AuthenticatedAccountsRoute,
-  AuthenticatedCardsRoute: AuthenticatedCardsRoute,
-  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedSendMoneyRoute: AuthenticatedSendMoneyRoute,
-  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedAppAccountsRoute: AuthenticatedAppAccountsRoute,
+  AuthenticatedAppCardsRoute: AuthenticatedAppCardsRoute,
+  AuthenticatedAppDashboardRoute: AuthenticatedAppDashboardRoute,
+  AuthenticatedAppSendMoneyRoute: AuthenticatedAppSendMoneyRoute,
+  AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -346,13 +350,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
