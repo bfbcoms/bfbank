@@ -6,6 +6,36 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { VitePWA } from "vite-plugin-pwa";
+import { cpSync, existsSync, mkdirSync } from "node:fs";
+import { resolve } from "node:path";
+
+// Post-build helper: TanStack Start emits the client to dist/client/, but
+// vite-plugin-pwa writes sw.js/workbox-*.js to dist/. Copy them alongside
+// the client bundle so they're served from the site root in production.
+function copyPwaAssetsToClient() {
+  return {
+    name: "bfb-copy-pwa-to-client",
+    apply: "build" as const,
+    closeBundle() {
+      const distRoot = resolve(process.cwd(), "dist");
+      const clientDir = resolve(distRoot, "client");
+      if (!existsSync(clientDir)) mkdirSync(clientDir, { recursive: true });
+      for (const name of ["sw.js", "sw.js.map"]) {
+        const from = resolve(distRoot, name);
+        if (existsSync(from)) cpSync(from, resolve(clientDir, name));
+      }
+      // Workbox runtime chunk has a content-hash suffix — pick it up dynamically.
+      // Kept in sync via glob on next build.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const fs = require("node:fs") as typeof import("node:fs");
+      for (const entry of fs.readdirSync(distRoot)) {
+        if (/^workbox-[0-9a-f]+\.js(\.map)?$/i.test(entry)) {
+          cpSync(resolve(distRoot, entry), resolve(clientDir, entry));
+        }
+      }
+    },
+  };
+}
 
 export default defineConfig({
   tanstackStart: {
@@ -55,5 +85,7 @@ export default defineConfig({
         ],
       },
     }),
+    copyPwaAssetsToClient(),
   ],
 });
+
