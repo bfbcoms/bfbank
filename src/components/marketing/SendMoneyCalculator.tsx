@@ -127,22 +127,30 @@ function crossRate(from: string, to: string): number {
 }
 
 /**
- * Simulated async rate lookup (matches the shape of a real /rates call).
- * Kept intentionally fast (~250ms) but instrumented with a 3s timeout so
- * the UI can render a clean error path if the network stalls.
+ * Live rate lookup. Calls the Nium-backed server function; if Nium is
+ * unavailable (missing creds, HTTP error, timeout, malformed body) we fall
+ * back to the illustrative USD cross-rate so the UI stays responsive.
  */
-async function fetchRate(from: string, to: string, signal: AbortSignal): Promise<number> {
-  await new Promise<void>((resolve, reject) => {
-    const id = setTimeout(resolve, 220 + Math.random() * 180);
-    signal.addEventListener("abort", () => {
-      clearTimeout(id);
-      reject(new DOMException("Aborted", "AbortError"));
-    });
-  });
-  return crossRate(from, to);
+async function fetchRate(
+  from: string,
+  to: string,
+  signal: AbortSignal,
+  serverFetch: (args: { data: { from: string; to: string } }) => Promise<{ rate: number; source: "nium" | "fallback" }>,
+): Promise<{ rate: number; source: "nium" | "fallback" }> {
+  if (from === to) return { rate: 1, source: "nium" };
+  try {
+    const result = await serverFetch({ data: { from, to } });
+    if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+    if (result.source === "nium" && Number.isFinite(result.rate) && result.rate > 0) {
+      return result;
+    }
+  } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") throw err;
+    // fall through to local cross-rate
+  }
+  return { rate: crossRate(from, to), source: "fallback" };
 }
 
-const SEND_CURRENCIES = SEND_CURRENCY_CODES;
 const RECEIVE_CURRENCIES = RECEIVE_CURRENCY_CODES;
 
 const FEE_RATE = 0.0035; // 0.35%
