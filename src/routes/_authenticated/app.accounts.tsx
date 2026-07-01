@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { CurrencyFlag } from "@/components/CurrencyFlag";
 
 export const Route = createFileRoute("/_authenticated/app/accounts")({
   component: AccountsPage,
@@ -22,9 +23,12 @@ function AccountsPage() {
         {accounts.map((a) => (
           <li key={a.currency} className="grid gap-1 py-5 sm:grid-cols-[1fr_auto] sm:items-center">
             <div className="min-w-0">
-              <p className="text-sm font-medium tracking-institutional">
-                {a.name} · {a.currency}
-              </p>
+              <div className="flex items-center gap-3">
+                <CurrencyFlag code={a.currency} size={22} />
+                <p className="text-sm font-medium tracking-institutional">
+                  {a.name} · {a.currency}
+                </p>
+              </div>
               <p className="mt-1 truncate text-xs text-muted-foreground">{a.iban}</p>
             </div>
             <p className="text-lg font-semibold tracking-institutional sm:text-right">
@@ -36,3 +40,4 @@ function AccountsPage() {
     </div>
   );
 }
+

@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { CurrencyFlag } from "@/components/CurrencyFlag";
+
 
 export const Route = createFileRoute("/_authenticated/app/dashboard")({
   component: DashboardHome,
@@ -30,11 +32,15 @@ function DashboardHome() {
           { c: "USD", n: "US dollar", v: "$1,384.62" },
         ].map((a) => (
           <div key={a.c} className="border border-border bg-card p-5">
-            <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-              {a.n} · {a.c}
-            </p>
+            <div className="flex items-center gap-2">
+              <CurrencyFlag code={a.c} size={16} />
+              <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                {a.n} · {a.c}
+              </p>
+            </div>
             <p className="mt-3 text-2xl font-semibold tracking-institutional">{a.v}</p>
           </div>
+
         ))}
       </section>
 
