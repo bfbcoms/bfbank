@@ -8,33 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-// Circle-style country flag icons (SVG, matching the Flaticon "circle flags" style)
-const FLAGS: Record<string, string> = {
-  GBP: "https://hatscripts.github.io/circle-flags/flags/gb.svg",
-  USD: "https://hatscripts.github.io/circle-flags/flags/us.svg",
-  EUR: "https://hatscripts.github.io/circle-flags/flags/european_union.svg",
-  NGN: "https://hatscripts.github.io/circle-flags/flags/ng.svg",
-  INR: "https://hatscripts.github.io/circle-flags/flags/in.svg",
-  AED: "https://hatscripts.github.io/circle-flags/flags/ae.svg",
-};
-
-function CurrencyFlag({ code, size = 18 }: { code: string; size?: number }) {
-  const src = FLAGS[code];
-  if (!src) return null;
-  return (
-    <img
-      src={src}
-      alt=""
-      aria-hidden="true"
-      width={size}
-      height={size}
-      loading="lazy"
-      className="h-[18px] w-[18px] shrink-0 rounded-full object-cover ring-1 ring-border/60"
-      style={{ height: size, width: size }}
-    />
-  );
-}
+import { CurrencyFlag } from "@/components/CurrencyFlag";
+import {
+  NIUM_CURRENCIES,
+  SEND_CURRENCY_CODES,
+  RECEIVE_CURRENCY_CODES,
+  getCurrency,
+} from "@/lib/currencies";
 
 function CurrencySelect({
   value,
@@ -51,34 +31,61 @@ function CurrencySelect({
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger
         aria-label={ariaLabel}
-        className="h-11 w-auto min-w-[104px] shrink-0 gap-2 rounded-xl border-border bg-background px-3 text-sm font-medium uppercase tracking-institutional text-foreground focus:border-primary focus:ring-2 focus:ring-primary/30"
+        className="h-11 w-auto min-w-[112px] shrink-0 gap-2 rounded-xl border-border bg-background px-3 text-sm font-medium uppercase tracking-institutional text-foreground focus:border-primary focus:ring-2 focus:ring-primary/30"
       >
         <SelectValue />
       </SelectTrigger>
-      <SelectContent>
-        {options.map((o) => (
-          <SelectItem key={o} value={o} className="pl-2">
-            <span className="flex items-center gap-2 font-medium uppercase tracking-institutional">
-              <CurrencyFlag code={o} />
-              {o}
-            </span>
-          </SelectItem>
-        ))}
+      <SelectContent className="max-h-80">
+        {options.map((o) => {
+          const meta = getCurrency(o);
+          return (
+            <SelectItem key={o} value={o} className="pl-2">
+              <span className="flex items-center gap-2 font-medium">
+                <CurrencyFlag code={o} />
+                <span className="uppercase tracking-institutional">{o}</span>
+                {meta ? (
+                  <span className="ml-1 hidden text-xs font-normal normal-case text-muted-foreground sm:inline">
+                    {meta.name}
+                  </span>
+                ) : null}
+              </span>
+            </SelectItem>
+          );
+        })}
       </SelectContent>
     </Select>
   );
 }
 
+// Illustrative mid-market rates per 1 USD (static — for UI demonstration only).
+// Any pair is computed via USD cross-rate: (from → USD) × (USD → to).
+const USD_RATES: Record<string, number> = Object.fromEntries(
+  NIUM_CURRENCIES.map((c) => [c.code, 1]),
+);
+Object.assign(USD_RATES, {
+  USD: 1, GBP: 0.7868, EUR: 0.9309, AED: 3.6725, AUD: 1.5210, BDT: 117.10,
+  BGN: 1.8210, BHD: 0.3760, BRL: 5.0450, CAD: 1.3620, CHF: 0.8830, CLP: 940.20,
+  CNY: 7.2450, COP: 4020.10, CZK: 23.140, DKK: 6.9410, EGP: 47.850, FJD: 2.2410,
+  GEL: 2.7020, GHS: 15.310, HKD: 7.8010, HRK: 7.0110, HUF: 361.20, IDR: 15840,
+  ILS: 3.7020, INR: 83.14, JPY: 152.30, KES: 129.40, KRW: 1360.10, KWD: 0.3072,
+  LKR: 292.40, MAD: 10.040, MXN: 17.510, MYR: 4.6810, NGN: 1585.30, NOK: 10.720,
+  NPR: 133.10, NZD: 1.6420, OMR: 0.3845, PEN: 3.7420, PHP: 56.310, PKR: 278.20,
+  PLN: 4.0110, QAR: 3.6410, RON: 4.5620, RSD: 108.70, SAR: 3.7502, SEK: 10.510,
+  SGD: 1.3410, THB: 34.410, TND: 3.1210, TRY: 32.410, TWD: 32.140, TZS: 2610,
+  UGX: 3720, UYU: 39.410, VND: 24810, XOF: 611.20, ZAR: 18.410,
+});
 
-// Illustrative mid-market rates (static — for UI demonstration only)
-const RATES: Record<string, Record<string, number>> = {
-  GBP: { USD: 1.2712, EUR: 1.1834, NGN: 2015.42, INR: 105.71, AED: 4.6714 },
-  USD: { GBP: 0.7868, EUR: 0.9309, NGN: 1585.30, INR: 83.14, AED: 3.6725 },
-  EUR: { GBP: 0.8451, USD: 1.0742, NGN: 1702.88, INR: 89.31, AED: 3.9451 },
-};
+function crossRate(from: string, to: string): number {
+  if (from === to) return 1;
+  const f = USD_RATES[from];
+  const t = USD_RATES[to];
+  if (!f || !t) return 1;
+  // (1 USD = t "to") / (1 USD = f "from") = "to" per "from"
+  return t / f;
+}
 
-const SEND_CURRENCIES = ["GBP", "USD", "EUR"] as const;
-const RECEIVE_CURRENCIES = ["USD", "EUR", "GBP", "NGN", "INR", "AED"] as const;
+const SEND_CURRENCIES = SEND_CURRENCY_CODES;
+const RECEIVE_CURRENCIES = RECEIVE_CURRENCY_CODES;
 
 const FEE_RATE = 0.0035; // 0.35%
 const MAX_AMOUNT = 250_000;
@@ -86,8 +93,8 @@ const MIN_AMOUNT = 1;
 
 export function SendMoneyCalculator() {
   const [amount, setAmount] = useState("1000");
-  const [send, setSend] = useState<(typeof SEND_CURRENCIES)[number]>("GBP");
-  const [receive, setReceive] = useState<(typeof RECEIVE_CURRENCIES)[number]>("USD");
+  const [send, setSend] = useState<string>("GBP");
+  const [receive, setReceive] = useState<string>("USD");
 
   const numeric = Number(amount.replace(/,/g, "")) || 0;
 
@@ -98,6 +105,7 @@ export function SendMoneyCalculator() {
     if (numeric > MAX_AMOUNT)
       return { ok: false, message: `For transfers above ${new Intl.NumberFormat("en-GB").format(MAX_AMOUNT)} ${send}, contact our payments desk.` };
     return { ok: true, message: "" };
+
   }, [amount, numeric, send]);
 
   const rate = useMemo(() => (send === receive ? 1 : RATES[send]?.[receive] ?? 1), [send, receive]);
