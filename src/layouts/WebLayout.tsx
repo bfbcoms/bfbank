@@ -4,11 +4,11 @@ import { LayoutDashboard, Wallet, CreditCard, ArrowUpRight, Settings } from "luc
 import { supabase } from "@/integrations/supabase/client";
 
 const nav = [
-  { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { to: "/accounts", label: "Accounts", icon: Wallet },
-  { to: "/cards", label: "Cards", icon: CreditCard },
-  { to: "/send-money", label: "Send money", icon: ArrowUpRight },
-  { to: "/settings", label: "Settings", icon: Settings },
+  { to: "/app/dashboard", label: "Overview", icon: LayoutDashboard },
+  { to: "/app/accounts", label: "Accounts", icon: Wallet },
+  { to: "/app/cards", label: "Cards", icon: CreditCard },
+  { to: "/app/send-money", label: "Send money", icon: ArrowUpRight },
+  { to: "/app/settings", label: "Settings", icon: Settings },
 ] as const;
 
 export function WebLayout({ children }: { children: ReactNode }) {

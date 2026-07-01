@@ -9,24 +9,82 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthRouteImport } from './routes/auth'
+import { Route as TransfersRouteImport } from './routes/transfers'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SecurityRouteImport } from './routes/security'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PersonalRouteImport } from './routes/personal'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as HelpRouteImport } from './routes/help'
+import { Route as CardsRouteImport } from './routes/cards'
+import { Route as BusinessRouteImport } from './routes/business'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as LegalTermsRouteImport } from './routes/legal/terms'
+import { Route as LegalPrivacyRouteImport } from './routes/legal/privacy'
+import { Route as LegalCookiesRouteImport } from './routes/legal/cookies'
+import { Route as LegalCardholderAgreementRouteImport } from './routes/legal/cardholder-agreement'
 import { Route as AdminTemplatesRouteImport } from './routes/admin/templates'
 import { Route as AdminRolesRouteImport } from './routes/admin/roles'
 import { Route as AdminDevicesRouteImport } from './routes/admin/devices'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
-import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedSendMoneyRouteImport } from './routes/_authenticated/send-money'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedCardsRouteImport } from './routes/_authenticated/cards'
-import { Route as AuthenticatedAccountsRouteImport } from './routes/_authenticated/accounts'
+import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app.settings'
+import { Route as AuthenticatedAppSendMoneyRouteImport } from './routes/_authenticated/app.send-money'
+import { Route as AuthenticatedAppDashboardRouteImport } from './routes/_authenticated/app.dashboard'
+import { Route as AuthenticatedAppCardsRouteImport } from './routes/_authenticated/app.cards'
+import { Route as AuthenticatedAppAccountsRouteImport } from './routes/_authenticated/app.accounts'
 
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const TransfersRoute = TransfersRouteImport.update({
+  id: '/transfers',
+  path: '/transfers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonalRoute = PersonalRouteImport.update({
+  id: '/personal',
+  path: '/personal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CardsRoute = CardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusinessRoute = BusinessRouteImport.update({
+  id: '/business',
+  path: '/business',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -48,6 +106,27 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const LegalTermsRoute = LegalTermsRouteImport.update({
+  id: '/legal/terms',
+  path: '/legal/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/legal/privacy',
+  path: '/legal/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalCookiesRoute = LegalCookiesRouteImport.update({
+  id: '/legal/cookies',
+  path: '/legal/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalCardholderAgreementRoute =
+  LegalCardholderAgreementRouteImport.update({
+    id: '/legal/cardholder-agreement',
+    path: '/legal/cardholder-agreement',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminTemplatesRoute = AdminTemplatesRouteImport.update({
   id: '/templates',
   path: '/templates',
@@ -68,140 +147,298 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+const AuthenticatedAppSettingsRoute =
+  AuthenticatedAppSettingsRouteImport.update({
+    id: '/app/settings',
+    path: '/app/settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAppSendMoneyRoute =
+  AuthenticatedAppSendMoneyRouteImport.update({
+    id: '/app/send-money',
+    path: '/app/send-money',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAppDashboardRoute =
+  AuthenticatedAppDashboardRouteImport.update({
+    id: '/app/dashboard',
+    path: '/app/dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAppCardsRoute = AuthenticatedAppCardsRouteImport.update({
+  id: '/app/cards',
+  path: '/app/cards',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedSendMoneyRoute = AuthenticatedSendMoneyRouteImport.update({
-  id: '/send-money',
-  path: '/send-money',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedCardsRoute = AuthenticatedCardsRouteImport.update({
-  id: '/cards',
-  path: '/cards',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedAccountsRoute = AuthenticatedAccountsRouteImport.update({
-  id: '/accounts',
-  path: '/accounts',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+const AuthenticatedAppAccountsRoute =
+  AuthenticatedAppAccountsRouteImport.update({
+    id: '/app/accounts',
+    path: '/app/accounts',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
-  '/auth': typeof AuthRoute
-  '/accounts': typeof AuthenticatedAccountsRoute
-  '/cards': typeof AuthenticatedCardsRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/send-money': typeof AuthenticatedSendMoneyRoute
-  '/settings': typeof AuthenticatedSettingsRoute
+  '/about': typeof AboutRoute
+  '/business': typeof BusinessRoute
+  '/cards': typeof CardsRoute
+  '/help': typeof HelpRoute
+  '/login': typeof LoginRoute
+  '/personal': typeof PersonalRoute
+  '/pricing': typeof PricingRoute
+  '/security': typeof SecurityRoute
+  '/signup': typeof SignupRoute
+  '/transfers': typeof TransfersRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
+  '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
+  '/legal/cookies': typeof LegalCookiesRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/admin/': typeof AdminIndexRoute
+  '/app/accounts': typeof AuthenticatedAppAccountsRoute
+  '/app/cards': typeof AuthenticatedAppCardsRoute
+  '/app/dashboard': typeof AuthenticatedAppDashboardRoute
+  '/app/send-money': typeof AuthenticatedAppSendMoneyRoute
+  '/app/settings': typeof AuthenticatedAppSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/accounts': typeof AuthenticatedAccountsRoute
-  '/cards': typeof AuthenticatedCardsRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/send-money': typeof AuthenticatedSendMoneyRoute
-  '/settings': typeof AuthenticatedSettingsRoute
+  '/about': typeof AboutRoute
+  '/business': typeof BusinessRoute
+  '/cards': typeof CardsRoute
+  '/help': typeof HelpRoute
+  '/login': typeof LoginRoute
+  '/personal': typeof PersonalRoute
+  '/pricing': typeof PricingRoute
+  '/security': typeof SecurityRoute
+  '/signup': typeof SignupRoute
+  '/transfers': typeof TransfersRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
+  '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
+  '/legal/cookies': typeof LegalCookiesRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/admin': typeof AdminIndexRoute
+  '/app/accounts': typeof AuthenticatedAppAccountsRoute
+  '/app/cards': typeof AuthenticatedAppCardsRoute
+  '/app/dashboard': typeof AuthenticatedAppDashboardRoute
+  '/app/send-money': typeof AuthenticatedAppSendMoneyRoute
+  '/app/settings': typeof AuthenticatedAppSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
-  '/auth': typeof AuthRoute
-  '/_authenticated/accounts': typeof AuthenticatedAccountsRoute
-  '/_authenticated/cards': typeof AuthenticatedCardsRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/send-money': typeof AuthenticatedSendMoneyRoute
-  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/about': typeof AboutRoute
+  '/business': typeof BusinessRoute
+  '/cards': typeof CardsRoute
+  '/help': typeof HelpRoute
+  '/login': typeof LoginRoute
+  '/personal': typeof PersonalRoute
+  '/pricing': typeof PricingRoute
+  '/security': typeof SecurityRoute
+  '/signup': typeof SignupRoute
+  '/transfers': typeof TransfersRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
+  '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
+  '/legal/cookies': typeof LegalCookiesRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/admin/': typeof AdminIndexRoute
+  '/_authenticated/app/accounts': typeof AuthenticatedAppAccountsRoute
+  '/_authenticated/app/cards': typeof AuthenticatedAppCardsRoute
+  '/_authenticated/app/dashboard': typeof AuthenticatedAppDashboardRoute
+  '/_authenticated/app/send-money': typeof AuthenticatedAppSendMoneyRoute
+  '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
-    | '/auth'
-    | '/accounts'
+    | '/about'
+    | '/business'
     | '/cards'
-    | '/dashboard'
-    | '/send-money'
-    | '/settings'
+    | '/help'
+    | '/login'
+    | '/personal'
+    | '/pricing'
+    | '/security'
+    | '/signup'
+    | '/transfers'
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/roles'
     | '/admin/templates'
+    | '/legal/cardholder-agreement'
+    | '/legal/cookies'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/admin/'
+    | '/app/accounts'
+    | '/app/cards'
+    | '/app/dashboard'
+    | '/app/send-money'
+    | '/app/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
-    | '/accounts'
+    | '/about'
+    | '/business'
     | '/cards'
-    | '/dashboard'
-    | '/send-money'
-    | '/settings'
+    | '/help'
+    | '/login'
+    | '/personal'
+    | '/pricing'
+    | '/security'
+    | '/signup'
+    | '/transfers'
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/roles'
     | '/admin/templates'
+    | '/legal/cardholder-agreement'
+    | '/legal/cookies'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/admin'
+    | '/app/accounts'
+    | '/app/cards'
+    | '/app/dashboard'
+    | '/app/send-money'
+    | '/app/settings'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/admin'
-    | '/auth'
-    | '/_authenticated/accounts'
-    | '/_authenticated/cards'
-    | '/_authenticated/dashboard'
-    | '/_authenticated/send-money'
-    | '/_authenticated/settings'
+    | '/about'
+    | '/business'
+    | '/cards'
+    | '/help'
+    | '/login'
+    | '/personal'
+    | '/pricing'
+    | '/security'
+    | '/signup'
+    | '/transfers'
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/roles'
     | '/admin/templates'
+    | '/legal/cardholder-agreement'
+    | '/legal/cookies'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/admin/'
+    | '/_authenticated/app/accounts'
+    | '/_authenticated/app/cards'
+    | '/_authenticated/app/dashboard'
+    | '/_authenticated/app/send-money'
+    | '/_authenticated/app/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AboutRoute: typeof AboutRoute
+  BusinessRoute: typeof BusinessRoute
+  CardsRoute: typeof CardsRoute
+  HelpRoute: typeof HelpRoute
+  LoginRoute: typeof LoginRoute
+  PersonalRoute: typeof PersonalRoute
+  PricingRoute: typeof PricingRoute
+  SecurityRoute: typeof SecurityRoute
+  SignupRoute: typeof SignupRoute
+  TransfersRoute: typeof TransfersRoute
+  LegalCardholderAgreementRoute: typeof LegalCardholderAgreementRoute
+  LegalCookiesRoute: typeof LegalCookiesRoute
+  LegalPrivacyRoute: typeof LegalPrivacyRoute
+  LegalTermsRoute: typeof LegalTermsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/transfers': {
+      id: '/transfers'
+      path: '/transfers'
+      fullPath: '/transfers'
+      preLoaderRoute: typeof TransfersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personal': {
+      id: '/personal'
+      path: '/personal'
+      fullPath: '/personal'
+      preLoaderRoute: typeof PersonalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cards': {
+      id: '/cards'
+      path: '/cards'
+      fullPath: '/cards'
+      preLoaderRoute: typeof CardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business': {
+      id: '/business'
+      path: '/business'
+      fullPath: '/business'
+      preLoaderRoute: typeof BusinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -232,6 +469,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/legal/terms': {
+      id: '/legal/terms'
+      path: '/legal/terms'
+      fullPath: '/legal/terms'
+      preLoaderRoute: typeof LegalTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/legal/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/cookies': {
+      id: '/legal/cookies'
+      path: '/legal/cookies'
+      fullPath: '/legal/cookies'
+      preLoaderRoute: typeof LegalCookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/cardholder-agreement': {
+      id: '/legal/cardholder-agreement'
+      path: '/legal/cardholder-agreement'
+      fullPath: '/legal/cardholder-agreement'
+      preLoaderRoute: typeof LegalCardholderAgreementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/templates': {
       id: '/admin/templates'
       path: '/templates'
@@ -260,58 +525,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuditRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+    '/_authenticated/app/settings': {
+      id: '/_authenticated/app/settings'
+      path: '/app/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AuthenticatedAppSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/send-money': {
-      id: '/_authenticated/send-money'
-      path: '/send-money'
-      fullPath: '/send-money'
-      preLoaderRoute: typeof AuthenticatedSendMoneyRouteImport
+    '/_authenticated/app/send-money': {
+      id: '/_authenticated/app/send-money'
+      path: '/app/send-money'
+      fullPath: '/app/send-money'
+      preLoaderRoute: typeof AuthenticatedAppSendMoneyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+    '/_authenticated/app/dashboard': {
+      id: '/_authenticated/app/dashboard'
+      path: '/app/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AuthenticatedAppDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/cards': {
-      id: '/_authenticated/cards'
-      path: '/cards'
-      fullPath: '/cards'
-      preLoaderRoute: typeof AuthenticatedCardsRouteImport
+    '/_authenticated/app/cards': {
+      id: '/_authenticated/app/cards'
+      path: '/app/cards'
+      fullPath: '/app/cards'
+      preLoaderRoute: typeof AuthenticatedAppCardsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/accounts': {
-      id: '/_authenticated/accounts'
-      path: '/accounts'
-      fullPath: '/accounts'
-      preLoaderRoute: typeof AuthenticatedAccountsRouteImport
+    '/_authenticated/app/accounts': {
+      id: '/_authenticated/app/accounts'
+      path: '/app/accounts'
+      fullPath: '/app/accounts'
+      preLoaderRoute: typeof AuthenticatedAppAccountsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAccountsRoute: typeof AuthenticatedAccountsRoute
-  AuthenticatedCardsRoute: typeof AuthenticatedCardsRoute
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedSendMoneyRoute: typeof AuthenticatedSendMoneyRoute
-  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedAppAccountsRoute: typeof AuthenticatedAppAccountsRoute
+  AuthenticatedAppCardsRoute: typeof AuthenticatedAppCardsRoute
+  AuthenticatedAppDashboardRoute: typeof AuthenticatedAppDashboardRoute
+  AuthenticatedAppSendMoneyRoute: typeof AuthenticatedAppSendMoneyRoute
+  AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAccountsRoute: AuthenticatedAccountsRoute,
-  AuthenticatedCardsRoute: AuthenticatedCardsRoute,
-  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedSendMoneyRoute: AuthenticatedSendMoneyRoute,
-  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedAppAccountsRoute: AuthenticatedAppAccountsRoute,
+  AuthenticatedAppCardsRoute: AuthenticatedAppCardsRoute,
+  AuthenticatedAppDashboardRoute: AuthenticatedAppDashboardRoute,
+  AuthenticatedAppSendMoneyRoute: AuthenticatedAppSendMoneyRoute,
+  AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -341,7 +606,20 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AboutRoute: AboutRoute,
+  BusinessRoute: BusinessRoute,
+  CardsRoute: CardsRoute,
+  HelpRoute: HelpRoute,
+  LoginRoute: LoginRoute,
+  PersonalRoute: PersonalRoute,
+  PricingRoute: PricingRoute,
+  SecurityRoute: SecurityRoute,
+  SignupRoute: SignupRoute,
+  TransfersRoute: TransfersRoute,
+  LegalCardholderAgreementRoute: LegalCardholderAgreementRoute,
+  LegalCookiesRoute: LegalCookiesRoute,
+  LegalPrivacyRoute: LegalPrivacyRoute,
+  LegalTermsRoute: LegalTermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
