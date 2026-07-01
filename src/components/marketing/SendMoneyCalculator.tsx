@@ -108,7 +108,7 @@ export function SendMoneyCalculator() {
 
   }, [amount, numeric, send]);
 
-  const rate = useMemo(() => (send === receive ? 1 : RATES[send]?.[receive] ?? 1), [send, receive]);
+  const rate = useMemo(() => crossRate(send, receive), [send, receive]);
   const fee = numeric * FEE_RATE;
   const converted = validation.ok ? (numeric - fee) * rate : 0;
 
@@ -118,11 +118,12 @@ export function SendMoneyCalculator() {
     new Intl.NumberFormat("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
 
   const swap = () => {
-    if ((SEND_CURRENCIES as readonly string[]).includes(receive)) {
-      const next = receive as (typeof SEND_CURRENCIES)[number];
-      setReceive(send as (typeof RECEIVE_CURRENCIES)[number]);
+    if (SEND_CURRENCIES.includes(receive)) {
+      const next = receive;
+      setReceive(send);
       setSend(next);
     }
+
   };
 
   return (
