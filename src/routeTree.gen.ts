@@ -14,6 +14,10 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminTemplatesRouteImport } from './routes/admin/templates'
+import { Route as AdminRolesRouteImport } from './routes/admin/roles'
+import { Route as AdminDevicesRouteImport } from './routes/admin/devices'
+import { Route as AdminAuditRouteImport } from './routes/admin/audit'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSendMoneyRouteImport } from './routes/_authenticated/send-money'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -42,6 +46,26 @@ const IndexRoute = IndexRouteImport.update({
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminTemplatesRoute = AdminTemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminRolesRoute = AdminRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminDevicesRoute = AdminDevicesRouteImport.update({
+  id: '/devices',
+  path: '/devices',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -79,6 +103,10 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/send-money': typeof AuthenticatedSendMoneyRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/devices': typeof AdminDevicesRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/templates': typeof AdminTemplatesRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -89,6 +117,10 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/send-money': typeof AuthenticatedSendMoneyRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/devices': typeof AdminDevicesRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/templates': typeof AdminTemplatesRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -102,6 +134,10 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/send-money': typeof AuthenticatedSendMoneyRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/devices': typeof AdminDevicesRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/templates': typeof AdminTemplatesRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -115,6 +151,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/send-money'
     | '/settings'
+    | '/admin/audit'
+    | '/admin/devices'
+    | '/admin/roles'
+    | '/admin/templates'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -125,6 +165,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/send-money'
     | '/settings'
+    | '/admin/audit'
+    | '/admin/devices'
+    | '/admin/roles'
+    | '/admin/templates'
     | '/admin'
   id:
     | '__root__'
@@ -137,6 +181,10 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/send-money'
     | '/_authenticated/settings'
+    | '/admin/audit'
+    | '/admin/devices'
+    | '/admin/roles'
+    | '/admin/templates'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -182,6 +230,34 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/templates': {
+      id: '/admin/templates'
+      path: '/templates'
+      fullPath: '/admin/templates'
+      preLoaderRoute: typeof AdminTemplatesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/roles': {
+      id: '/admin/roles'
+      path: '/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AdminRolesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/devices': {
+      id: '/admin/devices'
+      path: '/devices'
+      fullPath: '/admin/devices'
+      preLoaderRoute: typeof AdminDevicesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/audit': {
+      id: '/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/_authenticated/settings': {
@@ -242,10 +318,18 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface AdminRouteRouteChildren {
+  AdminAuditRoute: typeof AdminAuditRoute
+  AdminDevicesRoute: typeof AdminDevicesRoute
+  AdminRolesRoute: typeof AdminRolesRoute
+  AdminTemplatesRoute: typeof AdminTemplatesRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminAuditRoute: AdminAuditRoute,
+  AdminDevicesRoute: AdminDevicesRoute,
+  AdminRolesRoute: AdminRolesRoute,
+  AdminTemplatesRoute: AdminTemplatesRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -262,3 +346,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
