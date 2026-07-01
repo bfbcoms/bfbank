@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { AdminLayout } from "@/layouts/AdminLayout";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -18,5 +19,9 @@ export const Route = createFileRoute("/admin")({
     if (!isStaff) throw redirect({ to: "/" });
     return { user: userData.user };
   },
-  component: () => <Outlet />,
+  component: () => (
+    <AdminLayout>
+      <Outlet />
+    </AdminLayout>
+  ),
 });
