@@ -173,16 +173,13 @@ export function SendMoneyCalculator() {
                 </AnimatePresence>
               </div>
             </div>
-            <select
+            <CurrencySelect
               value={receive}
-              onChange={(e) => setReceive(e.target.value as typeof receive)}
-              aria-label="Recipient currency"
-              className="h-11 shrink-0 rounded-xl border border-border bg-background px-3 text-sm font-medium tracking-institutional uppercase text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-            >
-              {RECEIVE_CURRENCIES.map((o) => (
-                <option key={o} value={o}>{o}</option>
-              ))}
-            </select>
+              onChange={(v) => setReceive(v as typeof receive)}
+              options={RECEIVE_CURRENCIES}
+              ariaLabel="Recipient currency"
+            />
+
           </div>
         </div>
 
