@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDownUp, AlertCircle, Check, ChevronDown, RefreshCw } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Command,
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/command";
 import { CurrencyFlag } from "@/components/CurrencyFlag";
 import { cn } from "@/lib/utils";
+import { getNiumRate } from "@/lib/nium-rates.functions";
 import {
   NIUM_CURRENCIES,
   SEND_CURRENCY_CODES,
@@ -23,7 +25,7 @@ import {
  * Searchable currency picker: type-to-filter by code or name, arrow-key
  * navigation, Enter to select, Esc to close.
  */
-function CurrencySelect({
+export function CurrencySelect({
   value,
   onChange,
   options,
@@ -125,19 +127,28 @@ function crossRate(from: string, to: string): number {
 }
 
 /**
- * Simulated async rate lookup (matches the shape of a real /rates call).
- * Kept intentionally fast (~250ms) but instrumented with a 3s timeout so
- * the UI can render a clean error path if the network stalls.
+ * Live rate lookup. Calls the Nium-backed server function; if Nium is
+ * unavailable (missing creds, HTTP error, timeout, malformed body) we fall
+ * back to the illustrative USD cross-rate so the UI stays responsive.
  */
-async function fetchRate(from: string, to: string, signal: AbortSignal): Promise<number> {
-  await new Promise<void>((resolve, reject) => {
-    const id = setTimeout(resolve, 220 + Math.random() * 180);
-    signal.addEventListener("abort", () => {
-      clearTimeout(id);
-      reject(new DOMException("Aborted", "AbortError"));
-    });
-  });
-  return crossRate(from, to);
+async function fetchRate(
+  from: string,
+  to: string,
+  signal: AbortSignal,
+  serverFetch: (args: { data: { from: string; to: string } }) => Promise<{ rate: number; source: "nium" | "fallback" }>,
+): Promise<{ rate: number; source: "nium" | "fallback" }> {
+  if (from === to) return { rate: 1, source: "nium" };
+  try {
+    const result = await serverFetch({ data: { from, to } });
+    if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+    if (result.source === "nium" && Number.isFinite(result.rate) && result.rate > 0) {
+      return result;
+    }
+  } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") throw err;
+    // fall through to local cross-rate
+  }
+  return { rate: crossRate(from, to), source: "fallback" };
 }
 
 const SEND_CURRENCIES = SEND_CURRENCY_CODES;
@@ -146,11 +157,11 @@ const RECEIVE_CURRENCIES = RECEIVE_CURRENCY_CODES;
 const FEE_RATE = 0.0035; // 0.35%
 const MAX_AMOUNT = 250_000;
 const MIN_AMOUNT = 1;
-const RATE_TIMEOUT_MS = 3000;
+const RATE_TIMEOUT_MS = 5000;
 
 type RateState =
   | { status: "loading" }
-  | { status: "ready"; rate: number }
+  | { status: "ready"; rate: number; source: "nium" | "fallback" }
   | { status: "error"; message: string };
 
 export function SendMoneyCalculator() {
@@ -160,6 +171,7 @@ export function SendMoneyCalculator() {
   const [rateState, setRateState] = useState<RateState>({ status: "loading" });
   const [reloadKey, setReloadKey] = useState(0);
   const attemptRef = useRef(0);
+  const niumFetch = useServerFn(getNiumRate);
 
   const numeric = Number(amount.replace(/,/g, "")) || 0;
 
@@ -177,10 +189,10 @@ export function SendMoneyCalculator() {
     const attempt = ++attemptRef.current;
     setRateState({ status: "loading" });
     const timeoutId = setTimeout(() => controller.abort(), RATE_TIMEOUT_MS);
-    fetchRate(send, receive, controller.signal)
-      .then((rate) => {
+    fetchRate(send, receive, controller.signal, niumFetch)
+      .then((result) => {
         if (attempt !== attemptRef.current) return;
-        setRateState({ status: "ready", rate });
+        setRateState({ status: "ready", rate: result.rate, source: result.source });
       })
       .catch((err: unknown) => {
         if (attempt !== attemptRef.current) return;
@@ -199,7 +211,7 @@ export function SendMoneyCalculator() {
       clearTimeout(timeoutId);
       controller.abort();
     };
-  }, [send, receive, reloadKey]);
+  }, [send, receive, reloadKey, niumFetch]);
 
   const rate = rateState.status === "ready" ? rateState.rate : 0;
   const fee = numeric * FEE_RATE;
@@ -228,7 +240,13 @@ export function SendMoneyCalculator() {
         </p>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-primary">
           <span className={cn("h-1.5 w-1.5 rounded-full bg-primary", rateState.status === "loading" && "animate-pulse")} />
-          {rateState.status === "loading" ? "Fetching" : rateState.status === "error" ? "Offline" : "Live"}
+          {rateState.status === "loading"
+            ? "Fetching"
+            : rateState.status === "error"
+              ? "Offline"
+              : rateState.source === "nium"
+                ? "Live · Nium"
+                : "Indicative"}
         </span>
       </div>
 
