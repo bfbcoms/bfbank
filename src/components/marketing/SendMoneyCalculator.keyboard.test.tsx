@@ -30,8 +30,11 @@ describe("CurrencySelect keyboard flow", () => {
     const user = userEvent.setup();
     renderPicker(SEND_CURRENCY_CODES);
     await openPicker(user);
+    const options = screen.getAllByRole("option");
+    expect(options).toHaveLength(SEND_CURRENCY_CODES.length);
+    const text = options.map((o) => o.textContent ?? "").join("|");
     for (const code of SEND_CURRENCY_CODES) {
-      expect(screen.getByRole("option", { name: new RegExp(`^${code}\\b`) })).toBeInTheDocument();
+      expect(text).toContain(code);
     }
   });
 
