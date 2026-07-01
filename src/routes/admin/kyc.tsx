@@ -289,6 +289,21 @@ function ReviewDrawer({
       metadata: { reason: decision === "reject" ? reason.trim() : null } as never,
     });
 
+    // Fire-and-forget customer notification (server-verified staff role).
+    try {
+      const { notifyKycDecision } = await import("@/lib/kyc-notify.functions");
+      await notifyKycDecision({
+        data: {
+          userId: row.user_id,
+          decision: nextStatus,
+          reason: decision === "reject" ? reason.trim() : null,
+          sessionId: row.didit_session_id ?? null,
+        },
+      });
+    } catch {
+      /* non-blocking */
+    }
+
     setBusy(null);
     onDone();
   }
