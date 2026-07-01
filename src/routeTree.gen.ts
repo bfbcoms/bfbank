@@ -9,10 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TransfersRouteImport } from './routes/transfers'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SecurityRouteImport } from './routes/security'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PersonalRouteImport } from './routes/personal'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as HelpRouteImport } from './routes/help'
+import { Route as CardsRouteImport } from './routes/cards'
+import { Route as BusinessRouteImport } from './routes/business'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as LegalTermsRouteImport } from './routes/legal/terms'
+import { Route as LegalPrivacyRouteImport } from './routes/legal/privacy'
+import { Route as LegalCookiesRouteImport } from './routes/legal/cookies'
+import { Route as LegalCardholderAgreementRouteImport } from './routes/legal/cardholder-agreement'
 import { Route as AdminTemplatesRouteImport } from './routes/admin/templates'
 import { Route as AdminRolesRouteImport } from './routes/admin/roles'
 import { Route as AdminDevicesRouteImport } from './routes/admin/devices'
@@ -23,6 +37,56 @@ import { Route as AuthenticatedAppDashboardRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppCardsRouteImport } from './routes/_authenticated/app.cards'
 import { Route as AuthenticatedAppAccountsRouteImport } from './routes/_authenticated/app.accounts'
 
+const TransfersRoute = TransfersRouteImport.update({
+  id: '/transfers',
+  path: '/transfers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonalRoute = PersonalRouteImport.update({
+  id: '/personal',
+  path: '/personal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CardsRoute = CardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusinessRoute = BusinessRouteImport.update({
+  id: '/business',
+  path: '/business',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -42,6 +106,27 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const LegalTermsRoute = LegalTermsRouteImport.update({
+  id: '/legal/terms',
+  path: '/legal/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/legal/privacy',
+  path: '/legal/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalCookiesRoute = LegalCookiesRouteImport.update({
+  id: '/legal/cookies',
+  path: '/legal/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalCardholderAgreementRoute =
+  LegalCardholderAgreementRouteImport.update({
+    id: '/legal/cardholder-agreement',
+    path: '/legal/cardholder-agreement',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminTemplatesRoute = AdminTemplatesRouteImport.update({
   id: '/templates',
   path: '/templates',
@@ -95,10 +180,24 @@ const AuthenticatedAppAccountsRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/about': typeof AboutRoute
+  '/business': typeof BusinessRoute
+  '/cards': typeof CardsRoute
+  '/help': typeof HelpRoute
+  '/login': typeof LoginRoute
+  '/personal': typeof PersonalRoute
+  '/pricing': typeof PricingRoute
+  '/security': typeof SecurityRoute
+  '/signup': typeof SignupRoute
+  '/transfers': typeof TransfersRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
+  '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
+  '/legal/cookies': typeof LegalCookiesRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/admin/': typeof AdminIndexRoute
   '/app/accounts': typeof AuthenticatedAppAccountsRoute
   '/app/cards': typeof AuthenticatedAppCardsRoute
@@ -108,10 +207,24 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/business': typeof BusinessRoute
+  '/cards': typeof CardsRoute
+  '/help': typeof HelpRoute
+  '/login': typeof LoginRoute
+  '/personal': typeof PersonalRoute
+  '/pricing': typeof PricingRoute
+  '/security': typeof SecurityRoute
+  '/signup': typeof SignupRoute
+  '/transfers': typeof TransfersRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
+  '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
+  '/legal/cookies': typeof LegalCookiesRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/admin': typeof AdminIndexRoute
   '/app/accounts': typeof AuthenticatedAppAccountsRoute
   '/app/cards': typeof AuthenticatedAppCardsRoute
@@ -124,10 +237,24 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
+  '/about': typeof AboutRoute
+  '/business': typeof BusinessRoute
+  '/cards': typeof CardsRoute
+  '/help': typeof HelpRoute
+  '/login': typeof LoginRoute
+  '/personal': typeof PersonalRoute
+  '/pricing': typeof PricingRoute
+  '/security': typeof SecurityRoute
+  '/signup': typeof SignupRoute
+  '/transfers': typeof TransfersRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
+  '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
+  '/legal/cookies': typeof LegalCookiesRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/admin/': typeof AdminIndexRoute
   '/_authenticated/app/accounts': typeof AuthenticatedAppAccountsRoute
   '/_authenticated/app/cards': typeof AuthenticatedAppCardsRoute
@@ -140,10 +267,24 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/about'
+    | '/business'
+    | '/cards'
+    | '/help'
+    | '/login'
+    | '/personal'
+    | '/pricing'
+    | '/security'
+    | '/signup'
+    | '/transfers'
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/roles'
     | '/admin/templates'
+    | '/legal/cardholder-agreement'
+    | '/legal/cookies'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/admin/'
     | '/app/accounts'
     | '/app/cards'
@@ -153,10 +294,24 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
+    | '/business'
+    | '/cards'
+    | '/help'
+    | '/login'
+    | '/personal'
+    | '/pricing'
+    | '/security'
+    | '/signup'
+    | '/transfers'
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/roles'
     | '/admin/templates'
+    | '/legal/cardholder-agreement'
+    | '/legal/cookies'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/admin'
     | '/app/accounts'
     | '/app/cards'
@@ -168,10 +323,24 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/admin'
+    | '/about'
+    | '/business'
+    | '/cards'
+    | '/help'
+    | '/login'
+    | '/personal'
+    | '/pricing'
+    | '/security'
+    | '/signup'
+    | '/transfers'
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/roles'
     | '/admin/templates'
+    | '/legal/cardholder-agreement'
+    | '/legal/cookies'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/admin/'
     | '/_authenticated/app/accounts'
     | '/_authenticated/app/cards'
@@ -184,10 +353,94 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  AboutRoute: typeof AboutRoute
+  BusinessRoute: typeof BusinessRoute
+  CardsRoute: typeof CardsRoute
+  HelpRoute: typeof HelpRoute
+  LoginRoute: typeof LoginRoute
+  PersonalRoute: typeof PersonalRoute
+  PricingRoute: typeof PricingRoute
+  SecurityRoute: typeof SecurityRoute
+  SignupRoute: typeof SignupRoute
+  TransfersRoute: typeof TransfersRoute
+  LegalCardholderAgreementRoute: typeof LegalCardholderAgreementRoute
+  LegalCookiesRoute: typeof LegalCookiesRoute
+  LegalPrivacyRoute: typeof LegalPrivacyRoute
+  LegalTermsRoute: typeof LegalTermsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/transfers': {
+      id: '/transfers'
+      path: '/transfers'
+      fullPath: '/transfers'
+      preLoaderRoute: typeof TransfersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personal': {
+      id: '/personal'
+      path: '/personal'
+      fullPath: '/personal'
+      preLoaderRoute: typeof PersonalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cards': {
+      id: '/cards'
+      path: '/cards'
+      fullPath: '/cards'
+      preLoaderRoute: typeof CardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business': {
+      id: '/business'
+      path: '/business'
+      fullPath: '/business'
+      preLoaderRoute: typeof BusinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -215,6 +468,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
+    }
+    '/legal/terms': {
+      id: '/legal/terms'
+      path: '/legal/terms'
+      fullPath: '/legal/terms'
+      preLoaderRoute: typeof LegalTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/legal/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/cookies': {
+      id: '/legal/cookies'
+      path: '/legal/cookies'
+      fullPath: '/legal/cookies'
+      preLoaderRoute: typeof LegalCookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/cardholder-agreement': {
+      id: '/legal/cardholder-agreement'
+      path: '/legal/cardholder-agreement'
+      fullPath: '/legal/cardholder-agreement'
+      preLoaderRoute: typeof LegalCardholderAgreementRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/templates': {
       id: '/admin/templates'
@@ -325,7 +606,31 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
+  AboutRoute: AboutRoute,
+  BusinessRoute: BusinessRoute,
+  CardsRoute: CardsRoute,
+  HelpRoute: HelpRoute,
+  LoginRoute: LoginRoute,
+  PersonalRoute: PersonalRoute,
+  PricingRoute: PricingRoute,
+  SecurityRoute: SecurityRoute,
+  SignupRoute: SignupRoute,
+  TransfersRoute: TransfersRoute,
+  LegalCardholderAgreementRoute: LegalCardholderAgreementRoute,
+  LegalCookiesRoute: LegalCookiesRoute,
+  LegalPrivacyRoute: LegalPrivacyRoute,
+  LegalTermsRoute: LegalTermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
