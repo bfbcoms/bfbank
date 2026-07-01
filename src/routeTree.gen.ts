@@ -29,6 +29,7 @@ import { Route as LegalCookiesRouteImport } from './routes/legal/cookies'
 import { Route as LegalCardholderAgreementRouteImport } from './routes/legal/cardholder-agreement'
 import { Route as AdminTemplatesRouteImport } from './routes/admin/templates'
 import { Route as AdminRolesRouteImport } from './routes/admin/roles'
+import { Route as AdminHomepageRouteImport } from './routes/admin/homepage'
 import { Route as AdminDevicesRouteImport } from './routes/admin/devices'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app.settings'
@@ -137,6 +138,11 @@ const AdminRolesRoute = AdminRolesRouteImport.update({
   path: '/roles',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminHomepageRoute = AdminHomepageRouteImport.update({
+  id: '/homepage',
+  path: '/homepage',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminDevicesRoute = AdminDevicesRouteImport.update({
   id: '/devices',
   path: '/devices',
@@ -192,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/transfers': typeof TransfersRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
@@ -219,6 +226,7 @@ export interface FileRoutesByTo {
   '/transfers': typeof TransfersRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
@@ -249,6 +257,7 @@ export interface FileRoutesById {
   '/transfers': typeof TransfersRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
@@ -279,6 +288,7 @@ export interface FileRouteTypes {
     | '/transfers'
     | '/admin/audit'
     | '/admin/devices'
+    | '/admin/homepage'
     | '/admin/roles'
     | '/admin/templates'
     | '/legal/cardholder-agreement'
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/transfers'
     | '/admin/audit'
     | '/admin/devices'
+    | '/admin/homepage'
     | '/admin/roles'
     | '/admin/templates'
     | '/legal/cardholder-agreement'
@@ -335,6 +346,7 @@ export interface FileRouteTypes {
     | '/transfers'
     | '/admin/audit'
     | '/admin/devices'
+    | '/admin/homepage'
     | '/admin/roles'
     | '/admin/templates'
     | '/legal/cardholder-agreement'
@@ -511,6 +523,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRolesRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/homepage': {
+      id: '/admin/homepage'
+      path: '/homepage'
+      fullPath: '/admin/homepage'
+      preLoaderRoute: typeof AdminHomepageRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/devices': {
       id: '/admin/devices'
       path: '/devices'
@@ -585,6 +604,7 @@ const AuthenticatedRouteRouteWithChildren =
 interface AdminRouteRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
   AdminDevicesRoute: typeof AdminDevicesRoute
+  AdminHomepageRoute: typeof AdminHomepageRoute
   AdminRolesRoute: typeof AdminRolesRoute
   AdminTemplatesRoute: typeof AdminTemplatesRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -593,6 +613,7 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
   AdminDevicesRoute: AdminDevicesRoute,
+  AdminHomepageRoute: AdminHomepageRoute,
   AdminRolesRoute: AdminRolesRoute,
   AdminTemplatesRoute: AdminTemplatesRoute,
   AdminIndexRoute: AdminIndexRoute,

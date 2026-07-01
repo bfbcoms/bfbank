@@ -104,7 +104,7 @@ function SectionEditor({ section }: { section: HomepageSection }) {
           cta_label: form.cta_label || null,
           cta_href: form.cta_href || null,
           image_url: form.image_url || null,
-          content: parsed,
+          content: parsed as never,
           sort_order: form.sort_order,
           is_visible: form.is_visible,
         })
