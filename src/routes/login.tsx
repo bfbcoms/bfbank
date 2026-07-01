@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, Loader2, ShieldCheck } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { makeRouteMeta } from "@/lib/route-meta";
 
 export const Route = createFileRoute("/login")({
@@ -15,7 +16,30 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    const { error: authErr } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (authErr) {
+      setError(
+        authErr.message === "Invalid login credentials"
+          ? "The email or password you entered doesn't match our records."
+          : authErr.message,
+      );
+      return;
+    }
+    // Route guard on /app will send unverified users to /onboarding.
+    navigate({ to: "/app/dashboard" });
+  }
 
   return (
     <main className="grid min-h-screen bg-background text-foreground md:grid-cols-[1.1fr_1fr] lg:grid-cols-[1fr_1fr]">
@@ -64,17 +88,16 @@ function LoginPage() {
             Continue to your dashboard, cards and transfers.
           </p>
 
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="mt-8 space-y-5"
-            aria-label="Log in"
-          >
+          <form onSubmit={onSubmit} className="mt-8 space-y-5" aria-label="Log in">
             <div>
               <label className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
                 Email
               </label>
               <input
                 type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
                 autoComplete="email"
                 className="h-12 w-full border-b border-border bg-transparent px-0 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none"
@@ -86,16 +109,13 @@ function LoginPage() {
                 <label className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
                   Password
                 </label>
-                <button
-                  type="button"
-                  className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground hover:text-primary"
-                >
-                  Forgot?
-                </button>
               </div>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••"
                   autoComplete="current-password"
                   className="h-12 w-full border-b border-border bg-transparent px-0 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none"
@@ -115,11 +135,27 @@ function LoginPage() {
               </div>
             </div>
 
+            {error && (
+              <div
+                role="alert"
+                className="border-l-2 border-red-500 bg-red-500/5 px-3 py-2 text-xs text-red-500"
+              >
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
-              className="mt-4 inline-flex h-12 w-full items-center justify-center bg-primary text-sm font-medium tracking-institutional uppercase text-primary-foreground transition-all hover:bg-primary/90"
+              disabled={loading}
+              className="mt-4 inline-flex h-12 w-full items-center justify-center bg-primary text-sm font-medium tracking-institutional uppercase text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-40"
             >
-              Log in
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in…
+                </>
+              ) : (
+                "Log in"
+              )}
             </button>
           </form>
 
