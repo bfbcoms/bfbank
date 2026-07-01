@@ -55,6 +55,14 @@ export const createDiditSession = createServerFn({ method: "POST" })
         .from("profiles")
         .update({ status: "active", rejection_reason: null })
         .eq("id", userId);
+
+      const { recordKycStatusNotification } = await import("@/lib/kyc-notifications.server");
+      await recordKycStatusNotification(supabaseAdmin, {
+        userId,
+        decision: "approved",
+        source: "mock",
+        sessionId,
+      });
     }
 
     return { sessionId, verificationUrl, mockMode };

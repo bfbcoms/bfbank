@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Search, ShieldCheck, X } from "lucide-react";
+import { Download, Loader2, Search, ShieldCheck, X } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { exportKycRowsToCsv } from "@/lib/kyc-csv";
 
 type Row = Database["public"]["Tables"]["kyc_verifications"]["Row"] & {
   profile?: {
@@ -126,6 +127,15 @@ function AdminKycQueue() {
               </option>
             ))}
           </select>
+          <button
+            type="button"
+            onClick={() => exportKycRowsToCsv(filtered, { status, q })}
+            disabled={filtered.length === 0}
+            className="inline-flex h-9 items-center gap-2 border border-primary/60 bg-primary/10 px-3 text-[10px] font-medium uppercase tracking-[0.25em] text-primary transition-colors hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Export filtered verifications as CSV"
+          >
+            <Download className="h-3 w-3" strokeWidth={1.75} /> Export CSV
+          </button>
         </div>
       </header>
 
@@ -278,6 +288,21 @@ function ReviewDrawer({
       target_id: row.id,
       metadata: { reason: decision === "reject" ? reason.trim() : null } as never,
     });
+
+    // Fire-and-forget customer notification (server-verified staff role).
+    try {
+      const { notifyKycDecision } = await import("@/lib/kyc-notify.functions");
+      await notifyKycDecision({
+        data: {
+          userId: row.user_id,
+          decision: nextStatus,
+          reason: decision === "reject" ? reason.trim() : null,
+          sessionId: row.didit_session_id ?? null,
+        },
+      });
+    } catch {
+      /* non-blocking */
+    }
 
     setBusy(null);
     onDone();
