@@ -211,7 +211,7 @@ export function SendMoneyCalculator() {
       clearTimeout(timeoutId);
       controller.abort();
     };
-  }, [send, receive, reloadKey]);
+  }, [send, receive, reloadKey, niumFetch]);
 
   const rate = rateState.status === "ready" ? rateState.rate : 0;
   const fee = numeric * FEE_RATE;
@@ -240,7 +240,13 @@ export function SendMoneyCalculator() {
         </p>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-primary">
           <span className={cn("h-1.5 w-1.5 rounded-full bg-primary", rateState.status === "loading" && "animate-pulse")} />
-          {rateState.status === "loading" ? "Fetching" : rateState.status === "error" ? "Offline" : "Live"}
+          {rateState.status === "loading"
+            ? "Fetching"
+            : rateState.status === "error"
+              ? "Offline"
+              : rateState.source === "nium"
+                ? "Live · Nium"
+                : "Indicative"}
         </span>
       </div>
 
