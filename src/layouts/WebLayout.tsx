@@ -49,6 +49,21 @@ export function WebLayout({ children }: { children: ReactNode }) {
           })}
         </nav>
 
+        {isStaff && (
+          <div className="border-t border-white/10 px-3 py-3">
+            <p className="mb-2 px-3 text-[10px] uppercase tracking-[0.3em] text-primary/80">
+              Staff
+            </p>
+            <Link
+              to="/admin"
+              className="flex items-center gap-3 px-3 py-2 text-sm tracking-institutional text-secondary-foreground/80 transition-colors hover:bg-white/5 hover:text-primary"
+            >
+              <ShieldCheck className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+              <span>Admin console</span>
+            </Link>
+          </div>
+        )}
+
         <div className="border-t border-white/10 px-6 py-5">
           <button
             type="button"
