@@ -31,6 +31,7 @@ import { Route as LegalCookiesRouteImport } from './routes/legal/cookies'
 import { Route as LegalCardholderAgreementRouteImport } from './routes/legal/cardholder-agreement'
 import { Route as AdminTemplatesRouteImport } from './routes/admin/templates'
 import { Route as AdminRolesRouteImport } from './routes/admin/roles'
+import { Route as AdminKycRouteImport } from './routes/admin/kyc'
 import { Route as AdminHomepageRouteImport } from './routes/admin/homepage'
 import { Route as AdminDevicesRouteImport } from './routes/admin/devices'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
@@ -151,6 +152,11 @@ const AdminRolesRoute = AdminRolesRouteImport.update({
   path: '/roles',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminKycRoute = AdminKycRouteImport.update({
+  id: '/kyc',
+  path: '/kyc',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminHomepageRoute = AdminHomepageRouteImport.update({
   id: '/homepage',
   path: '/homepage',
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/homepage': typeof AdminHomepageRoute
+  '/admin/kyc': typeof AdminKycRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
@@ -250,6 +257,7 @@ export interface FileRoutesByTo {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/homepage': typeof AdminHomepageRoute
+  '/admin/kyc': typeof AdminKycRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
@@ -284,6 +292,7 @@ export interface FileRoutesById {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/devices': typeof AdminDevicesRoute
   '/admin/homepage': typeof AdminHomepageRoute
+  '/admin/kyc': typeof AdminKycRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/legal/cardholder-agreement': typeof LegalCardholderAgreementRoute
@@ -318,6 +327,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/homepage'
+    | '/admin/kyc'
     | '/admin/roles'
     | '/admin/templates'
     | '/legal/cardholder-agreement'
@@ -349,6 +359,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/homepage'
+    | '/admin/kyc'
     | '/admin/roles'
     | '/admin/templates'
     | '/legal/cardholder-agreement'
@@ -382,6 +393,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/devices'
     | '/admin/homepage'
+    | '/admin/kyc'
     | '/admin/roles'
     | '/admin/templates'
     | '/legal/cardholder-agreement'
@@ -576,6 +588,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRolesRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/kyc': {
+      id: '/admin/kyc'
+      path: '/kyc'
+      fullPath: '/admin/kyc'
+      preLoaderRoute: typeof AdminKycRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/homepage': {
       id: '/admin/homepage'
       path: '/homepage'
@@ -665,6 +684,7 @@ interface AdminRouteRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
   AdminDevicesRoute: typeof AdminDevicesRoute
   AdminHomepageRoute: typeof AdminHomepageRoute
+  AdminKycRoute: typeof AdminKycRoute
   AdminRolesRoute: typeof AdminRolesRoute
   AdminTemplatesRoute: typeof AdminTemplatesRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -674,6 +694,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
   AdminDevicesRoute: AdminDevicesRoute,
   AdminHomepageRoute: AdminHomepageRoute,
+  AdminKycRoute: AdminKycRoute,
   AdminRolesRoute: AdminRolesRoute,
   AdminTemplatesRoute: AdminTemplatesRoute,
   AdminIndexRoute: AdminIndexRoute,
