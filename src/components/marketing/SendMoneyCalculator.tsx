@@ -1,6 +1,74 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDownUp, AlertCircle } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// Circle-style country flag icons (SVG, matching the Flaticon "circle flags" style)
+const FLAGS: Record<string, string> = {
+  GBP: "https://hatscripts.github.io/circle-flags/flags/gb.svg",
+  USD: "https://hatscripts.github.io/circle-flags/flags/us.svg",
+  EUR: "https://hatscripts.github.io/circle-flags/flags/european_union.svg",
+  NGN: "https://hatscripts.github.io/circle-flags/flags/ng.svg",
+  INR: "https://hatscripts.github.io/circle-flags/flags/in.svg",
+  AED: "https://hatscripts.github.io/circle-flags/flags/ae.svg",
+};
+
+function CurrencyFlag({ code, size = 18 }: { code: string; size?: number }) {
+  const src = FLAGS[code];
+  if (!src) return null;
+  return (
+    <img
+      src={src}
+      alt=""
+      aria-hidden="true"
+      width={size}
+      height={size}
+      loading="lazy"
+      className="h-[18px] w-[18px] shrink-0 rounded-full object-cover ring-1 ring-border/60"
+      style={{ height: size, width: size }}
+    />
+  );
+}
+
+function CurrencySelect({
+  value,
+  onChange,
+  options,
+  ariaLabel,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: readonly string[];
+  ariaLabel: string;
+}) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger
+        aria-label={ariaLabel}
+        className="h-11 w-auto min-w-[104px] shrink-0 gap-2 rounded-xl border-border bg-background px-3 text-sm font-medium uppercase tracking-institutional text-foreground focus:border-primary focus:ring-2 focus:ring-primary/30"
+      >
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((o) => (
+          <SelectItem key={o} value={o} className="pl-2">
+            <span className="flex items-center gap-2 font-medium uppercase tracking-institutional">
+              <CurrencyFlag code={o} />
+              {o}
+            </span>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
 
 // Illustrative mid-market rates (static — for UI demonstration only)
 const RATES: Record<string, Record<string, number>> = {
