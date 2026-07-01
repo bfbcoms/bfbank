@@ -71,12 +71,13 @@ function TransfersPage() {
               <tbody>
                 {corridors.map((c) => (
                   <tr key={c.from + c.to} className="border-t border-border">
-                    <td className="px-6 py-4 font-medium">{c.from}</td>
-                    <td className="px-6 py-4 font-medium">{c.to}</td>
+                    <td className="px-6 py-4"><CurrencyBadge code={c.from} /></td>
+                    <td className="px-6 py-4"><CurrencyBadge code={c.to} /></td>
                     <td className="px-6 py-4 text-muted-foreground">{c.speed}</td>
                     <td className="px-6 py-4 text-right text-muted-foreground">{c.cost}</td>
                   </tr>
                 ))}
+
               </tbody>
             </table>
           </div>
