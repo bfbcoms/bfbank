@@ -40,13 +40,33 @@ function AdminKycQueue() {
     let query = supabase
       .from("kyc_verifications")
       .select(
-        "id, user_id, account_type, didit_status, didit_session_id, rejection_reason, submitted_at, completed_at, profile:profiles!kyc_verifications_user_id_fkey(id, full_name, first_name, last_name, account_type, status, country), business:businesses!businesses_user_id_fkey(company_name, registration_number, country_of_incorporation, business_type)",
+        "id, user_id, account_type, didit_status, didit_session_id, rejection_reason, submitted_at, completed_at, profile:profiles!kyc_verifications_user_id_fkey(id, full_name, first_name, last_name, account_type, status, country)",
       )
       .order("submitted_at", { ascending: false })
       .limit(200);
     if (status !== "all") query = query.eq("didit_status", status);
     const { data, error } = await query;
-    if (!error && data) setRows(data as unknown as Row[]);
+    if (error || !data) {
+      setLoading(false);
+      return;
+    }
+
+    // Fetch matching businesses in one shot for business-type applicants.
+    const bizUserIds = data
+      .filter((r) => r.account_type === "business")
+      .map((r) => r.user_id);
+    const businessMap = new Map<string, Row["business"]>();
+    if (bizUserIds.length) {
+      const { data: bizData } = await supabase
+        .from("businesses")
+        .select("user_id, company_name, registration_number, country_of_incorporation, business_type")
+        .in("user_id", bizUserIds);
+      (bizData ?? []).forEach((b) => businessMap.set(b.user_id, b));
+    }
+
+    setRows(
+      data.map((r) => ({ ...(r as unknown as Row), business: businessMap.get(r.user_id) ?? null })),
+    );
     setLoading(false);
   }
 
