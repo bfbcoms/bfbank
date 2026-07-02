@@ -40,7 +40,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    reportClientError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (
@@ -111,8 +111,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "Bright Future Bank",
-          url: "https://bfbank.lovable.app",
-          logo: "https://bfbank.lovable.app/icons/icon-512.png",
+          url: getSiteUrl(),
+          logo: `${getSiteUrl()}/icons/icon-512.png`,
           sameAs: [],
         }),
       },
