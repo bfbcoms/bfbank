@@ -32,11 +32,11 @@ loaded from `.env`; see `Environment` below for the required keys.
 | ------------------- | -------------------------------------------------------- |
 | `bun run dev`       | Start the local dev server with HMR                      |
 | `bun run build`     | Produce a production build                               |
-| `bun run start`     | Serve the production build                               |
+| `bun run preview`   | Serve the production build locally                       |
 | `bun run test`      | Run the unit / component test suite (Vitest)             |
-| `bun run test:e2e`  | Run the end-to-end suite (Playwright)                    |
-| `bun run typecheck` | Strict TypeScript check (`tsgo`)                         |
+| `bun run test:watch`| Run Vitest in watch mode                                 |
 | `bun run lint`      | Lint sources                                             |
+| `bun run format`    | Format sources with Prettier                             |
 
 ## Environment
 
