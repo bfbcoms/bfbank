@@ -209,6 +209,31 @@ export async function processDiditWebhook(
   }
   const payload = parseResult.data;
   const mapped = mapStatus(payload.status);
+  const decisionId =
+    (payload.decision && typeof (payload.decision as Record<string, unknown>).id === "string"
+      ? ((payload.decision as Record<string, unknown>).id as string)
+      : null) ?? null;
+
+  // Hard idempotency: unique (session_id, status). If the same terminal event
+  // is re-delivered, the insert fails and we short-circuit before any writes
+  // to kyc_verifications / profiles / notifications.
+  const { error: eventErr } = await admin
+    .from("didit_webhook_events" as never)
+    .insert({
+      session_id: payload.session_id,
+      status: payload.status,
+      decision_id: decisionId,
+      payload: payload as never,
+      processed_status: mapped,
+    } as never);
+  if (eventErr) {
+    // 23505 = unique_violation → this exact (session,status) already processed.
+    const code = (eventErr as { code?: string }).code;
+    if (code === "23505") {
+      return { status: 200, body: { ok: true, idempotent: true } };
+    }
+    return { status: 200, body: { ok: false, retryable: true, reason: eventErr.message } };
+  }
 
   const { data: existing, error: readErr } = await admin
     .from("kyc_verifications")
