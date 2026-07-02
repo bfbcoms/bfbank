@@ -1,5 +1,7 @@
 {
-  "name": "tanstack_start_ts",
+  "name": "bright-future-bank",
+  "version": "0.1.0",
+  "description": "Bright Future Bank — cross-border banking platform (customer web, PWA and operations console).",
   "private": true,
   "sideEffects": false,
   "type": "module",
