@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { makeRouteMeta } from "@/lib/route-meta";
+import { SUPPORT_EMAIL } from "@/lib/site-config";
 
 export const Route = createFileRoute("/account-restricted")({
   ssr: false,
@@ -35,7 +36,7 @@ function RestrictedPage() {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <a
-            href="mailto:support@bfbank.lovable.app"
+            href={`mailto:${SUPPORT_EMAIL}`}
             className="inline-flex h-11 items-center justify-center bg-primary px-6 text-xs font-medium uppercase tracking-[0.25em] text-primary-foreground hover:bg-primary/90"
           >
             Contact support

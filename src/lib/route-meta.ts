@@ -1,7 +1,7 @@
 // Central SEO metadata helper. Every marketing/legal leaf route uses this
 // so canonical/og:url stay in lockstep with the route file location.
 
-const SITE = "https://bfbank.lovable.app";
+import { getSiteUrl } from "@/lib/site-config";
 
 type MakeMetaArgs = {
   title: string;
@@ -20,7 +20,7 @@ export function makeRouteMeta({
   ogType = "website",
   noindex = false,
 }: MakeMetaArgs) {
-  const url = `${SITE}${path}`;
+  const url = `${getSiteUrl()}${path}`;
   const meta = [
     { title },
     { name: "description", content: description },
