@@ -27,11 +27,6 @@ const COPY: Record<
     tone: "amber",
     icon: Loader2,
   },
-    title: "Under manual review",
-    body: "A compliance officer is reviewing your submission. We'll email you as soon as a decision is made.",
-    tone: "amber",
-    icon: ShieldAlert,
-  },
   approved: {
     title: "Verification approved",
     body: "You're fully verified. All account features, cards and cross-border transfers are available.",
