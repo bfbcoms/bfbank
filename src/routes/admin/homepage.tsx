@@ -183,7 +183,7 @@ function SectionEditor({ section }: { section: HomepageSection }) {
 
       <label className="block">
         <span className={L}>Image URL (optional override)</span>
-        <input className={`${F} mt-2`} value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="/__l5e/assets-v1/..." />
+        <input className={`${F} mt-2`} value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="https://… or /assets/…" />
       </label>
 
       <label className="block">
