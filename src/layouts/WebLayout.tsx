@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { LayoutDashboard, Wallet, CreditCard, ArrowUpRight, Settings, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Wallet, CreditCard, ArrowUpRight, Settings, ShieldCheck, BadgeCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsStaff } from "@/hooks/use-is-staff";
 
@@ -9,6 +9,7 @@ const nav = [
   { to: "/app/accounts", label: "Accounts", icon: Wallet },
   { to: "/app/cards", label: "Cards", icon: CreditCard },
   { to: "/app/send-money", label: "Send money", icon: ArrowUpRight },
+  { to: "/app/verification", label: "Verification", icon: BadgeCheck },
   { to: "/app/settings", label: "Settings", icon: Settings },
 ] as const;
 

@@ -35,6 +35,7 @@ import { Route as AdminKycRouteImport } from './routes/admin/kyc'
 import { Route as AdminHomepageRouteImport } from './routes/admin/homepage'
 import { Route as AdminDevicesRouteImport } from './routes/admin/devices'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
+import { Route as AuthenticatedAppVerificationRouteImport } from './routes/_authenticated/app.verification'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app.settings'
 import { Route as AuthenticatedAppSendMoneyRouteImport } from './routes/_authenticated/app.send-money'
 import { Route as AuthenticatedAppDashboardRouteImport } from './routes/_authenticated/app.dashboard'
@@ -172,6 +173,12 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AuthenticatedAppVerificationRoute =
+  AuthenticatedAppVerificationRouteImport.update({
+    id: '/app/verification',
+    path: '/app/verification',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAppSettingsRoute =
   AuthenticatedAppSettingsRouteImport.update({
     id: '/app/settings',
@@ -238,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/app/dashboard': typeof AuthenticatedAppDashboardRoute
   '/app/send-money': typeof AuthenticatedAppSendMoneyRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
+  '/app/verification': typeof AuthenticatedAppVerificationRoute
   '/api/public/webhooks/didit': typeof ApiPublicWebhooksDiditRoute
 }
 export interface FileRoutesByTo {
@@ -270,6 +278,7 @@ export interface FileRoutesByTo {
   '/app/dashboard': typeof AuthenticatedAppDashboardRoute
   '/app/send-money': typeof AuthenticatedAppSendMoneyRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
+  '/app/verification': typeof AuthenticatedAppVerificationRoute
   '/api/public/webhooks/didit': typeof ApiPublicWebhooksDiditRoute
 }
 export interface FileRoutesById {
@@ -305,6 +314,7 @@ export interface FileRoutesById {
   '/_authenticated/app/dashboard': typeof AuthenticatedAppDashboardRoute
   '/_authenticated/app/send-money': typeof AuthenticatedAppSendMoneyRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
+  '/_authenticated/app/verification': typeof AuthenticatedAppVerificationRoute
   '/api/public/webhooks/didit': typeof ApiPublicWebhooksDiditRoute
 }
 export interface FileRouteTypes {
@@ -340,6 +350,7 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/send-money'
     | '/app/settings'
+    | '/app/verification'
     | '/api/public/webhooks/didit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -372,6 +383,7 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/send-money'
     | '/app/settings'
+    | '/app/verification'
     | '/api/public/webhooks/didit'
   id:
     | '__root__'
@@ -406,6 +418,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/dashboard'
     | '/_authenticated/app/send-money'
     | '/_authenticated/app/settings'
+    | '/_authenticated/app/verification'
     | '/api/public/webhooks/didit'
   fileRoutesById: FileRoutesById
 }
@@ -616,6 +629,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuditRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/_authenticated/app/verification': {
+      id: '/_authenticated/app/verification'
+      path: '/app/verification'
+      fullPath: '/app/verification'
+      preLoaderRoute: typeof AuthenticatedAppVerificationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/app/settings': {
       id: '/_authenticated/app/settings'
       path: '/app/settings'
@@ -667,6 +687,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAppDashboardRoute: typeof AuthenticatedAppDashboardRoute
   AuthenticatedAppSendMoneyRoute: typeof AuthenticatedAppSendMoneyRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
+  AuthenticatedAppVerificationRoute: typeof AuthenticatedAppVerificationRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -675,6 +696,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAppDashboardRoute: AuthenticatedAppDashboardRoute,
   AuthenticatedAppSendMoneyRoute: AuthenticatedAppSendMoneyRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,
+  AuthenticatedAppVerificationRoute: AuthenticatedAppVerificationRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -729,13 +751,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
