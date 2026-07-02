@@ -109,6 +109,36 @@ export type Database = {
         }
         Relationships: []
       }
+      didit_webhook_events: {
+        Row: {
+          decision_id: string | null
+          id: string
+          payload: Json
+          processed_status: string | null
+          received_at: string
+          session_id: string
+          status: string
+        }
+        Insert: {
+          decision_id?: string | null
+          id?: string
+          payload: Json
+          processed_status?: string | null
+          received_at?: string
+          session_id: string
+          status: string
+        }
+        Update: {
+          decision_id?: string | null
+          id?: string
+          payload?: Json
+          processed_status?: string | null
+          received_at?: string
+          session_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       email_templates: {
         Row: {
           created_at: string
