@@ -27,7 +27,6 @@ const COPY: Record<
     tone: "amber",
     icon: Loader2,
   },
-  in_review: {
     title: "Under manual review",
     body: "A compliance officer is reviewing your submission. We'll email you as soon as a decision is made.",
     tone: "amber",
