@@ -5,6 +5,18 @@ import { Download, Loader2, Search, ShieldCheck, X } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { exportKycRowsToCsv } from "@/lib/kyc-csv";
 
+type WebhookEvent = {
+  id: string;
+  session_id: string;
+  status: string;
+  decision_id: string | null;
+  received_at: string;
+  processed_status: string | null;
+};
+
+type NotificationRow = Database["public"]["Tables"]["notification_logs"]["Row"];
+type OtpRow = Database["public"]["Tables"]["otp_requests"]["Row"];
+
 type Row = Database["public"]["Tables"]["kyc_verifications"]["Row"] & {
   profile?: {
     id: string;
