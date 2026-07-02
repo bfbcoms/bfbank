@@ -10,7 +10,8 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+import { reportClientError } from "../lib/telemetry";
+import { getSiteUrl } from "../lib/site-config";
 import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {

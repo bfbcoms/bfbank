@@ -1,27 +1,33 @@
 /**
- * Guarded Service-Worker registration for Bright Future Bank.
+ * Guarded service-worker registration.
  *
- * Rules (per Lovable PWA skill):
- *  - Never register in dev, iframes, or Lovable preview hosts.
- *  - Respect a `?sw=off` kill-switch and unregister any matching worker.
- *  - Only ever manage /sw.js (never touch third-party workers like FCM).
+ * The service worker must never be installed in development, inside preview
+ * iframes, or on ephemeral preview hostnames — a stale cache in any of those
+ * environments would freeze contributors on outdated builds. In production the
+ * worker is registered at `/sw.js` under the root scope. The `?sw=off` query
+ * parameter forces an unregister at runtime as a kill switch.
  */
 
 const APP_SW_PATH = "/sw.js";
 
-function isPreviewOrDevHost(): boolean {
+const EPHEMERAL_HOST_SUFFIXES = [
+  ".lovableproject.com",
+  ".lovableproject-dev.com",
+  ".beta.lovable.dev",
+];
+
+const EPHEMERAL_HOSTS = new Set([
+  "lovableproject.com",
+  "lovableproject-dev.com",
+  "beta.lovable.dev",
+]);
+
+function isEphemeralPreviewHost(): boolean {
   if (typeof window === "undefined") return true;
   const host = window.location.hostname;
-  return (
-    host.startsWith("id-preview--") ||
-    host.startsWith("preview--") ||
-    host === "lovableproject.com" ||
-    host.endsWith(".lovableproject.com") ||
-    host === "lovableproject-dev.com" ||
-    host.endsWith(".lovableproject-dev.com") ||
-    host === "beta.lovable.dev" ||
-    host.endsWith(".beta.lovable.dev")
-  );
+  if (host.startsWith("id-preview--") || host.startsWith("preview--")) return true;
+  if (EPHEMERAL_HOSTS.has(host)) return true;
+  return EPHEMERAL_HOST_SUFFIXES.some((suffix) => host.endsWith(suffix));
 }
 
 async function unregisterAppWorker(): Promise<void> {
@@ -49,7 +55,7 @@ export function registerAppServiceWorker(): void {
   const killSwitch = new URLSearchParams(window.location.search).get("sw") === "off";
   const isProd = import.meta.env.PROD;
 
-  if (!isProd || inIframe || isPreviewOrDevHost() || killSwitch) {
+  if (!isProd || inIframe || isEphemeralPreviewHost() || killSwitch) {
     void unregisterAppWorker();
     return;
   }
