@@ -194,6 +194,7 @@ export type Database = {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"]
           completed_at: string | null
+          decision_data: Json | null
           didit_session_id: string | null
           didit_status: Database["public"]["Enums"]["kyc_status"]
           didit_verification_url: string | null
@@ -201,13 +202,16 @@ export type Database = {
           provider: string
           raw_payload: Json | null
           rejection_reason: string | null
+          session_token: string | null
           submitted_at: string
           updated_at: string
           user_id: string
+          workflow_id: string | null
         }
         Insert: {
           account_type: Database["public"]["Enums"]["account_type"]
           completed_at?: string | null
+          decision_data?: Json | null
           didit_session_id?: string | null
           didit_status?: Database["public"]["Enums"]["kyc_status"]
           didit_verification_url?: string | null
@@ -215,13 +219,16 @@ export type Database = {
           provider?: string
           raw_payload?: Json | null
           rejection_reason?: string | null
+          session_token?: string | null
           submitted_at?: string
           updated_at?: string
           user_id: string
+          workflow_id?: string | null
         }
         Update: {
           account_type?: Database["public"]["Enums"]["account_type"]
           completed_at?: string | null
+          decision_data?: Json | null
           didit_session_id?: string | null
           didit_status?: Database["public"]["Enums"]["kyc_status"]
           didit_verification_url?: string | null
@@ -229,9 +236,11 @@ export type Database = {
           provider?: string
           raw_payload?: Json | null
           rejection_reason?: string | null
+          session_token?: string | null
           submitted_at?: string
           updated_at?: string
           user_id?: string
+          workflow_id?: string | null
         }
         Relationships: []
       }
@@ -419,7 +428,13 @@ export type Database = {
       account_type: "individual" | "business"
       app_role: "super_admin" | "compliance" | "support" | "customer"
       device_type: "ios" | "android" | "web"
-      kyc_status: "pending" | "approved" | "rejected" | "expired"
+      kyc_status:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "expired"
+        | "in_progress"
+        | "abandoned"
       notif_channel: "email" | "sms" | "push"
       notif_status: "queued" | "sent" | "delivered" | "failed" | "bounced"
       otp_provider: "vonage" | "fcm"
@@ -556,7 +571,14 @@ export const Constants = {
       account_type: ["individual", "business"],
       app_role: ["super_admin", "compliance", "support", "customer"],
       device_type: ["ios", "android", "web"],
-      kyc_status: ["pending", "approved", "rejected", "expired"],
+      kyc_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "expired",
+        "in_progress",
+        "abandoned",
+      ],
       notif_channel: ["email", "sms", "push"],
       notif_status: ["queued", "sent", "delivered", "failed", "bounced"],
       otp_provider: ["vonage", "fcm"],
