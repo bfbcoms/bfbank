@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { BadgeCheck, Clock, ShieldAlert, ShieldX, Loader2, ArrowUpRight } from "lucide-react";
+import { BadgeCheck, Clock, ShieldX, Loader2, ArrowUpRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
