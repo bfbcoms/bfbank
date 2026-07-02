@@ -8,10 +8,27 @@ const createSessionInput = z.object({
 });
 
 /**
+ * Didit V3 session response — we only depend on the fields we actually use.
+ * See: https://docs.didit.me/api-reference/session/create-session
+ */
+const diditV3SessionSchema = z.object({
+  session_id: z.string(),
+  session_token: z.string().optional(),
+  url: z.string().url().optional(),
+  verification_url: z.string().url().optional(),
+});
+
+/**
  * Kicks off a Didit KYC/KYB session for the current user.
- * If DIDIT_MOCK_MODE is true (default), no external call is made — a fake session
- * is generated and the user's profile is immediately marked `active` so the
- * whole flow can be tested end-to-end.
+ *
+ * Production path: POST https://verification.didit.me/v3/session/ with the
+ * configured workflow_id and the user's internal id as vendor_data. Didit
+ * returns a hosted verification URL (and session token) which we hand to the
+ * browser. Terminal status arrives asynchronously via the webhook.
+ *
+ * Mock mode (DIDIT_MOCK_MODE=true): skip the external call, mint a fake
+ * session id, and auto-approve the user so the flow is testable without
+ * burning real Didit sessions.
  */
 export const createDiditSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -19,15 +36,28 @@ export const createDiditSession = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const mockMode = (process.env.DIDIT_MOCK_MODE ?? "true").toLowerCase() === "true";
+    const workflowId = process.env.DIDIT_WORKFLOW_ID ?? null;
 
-    // Persist an in-flight verification row (RLS: user_id = auth.uid())
-    const sessionId = mockMode
-      ? `mock_${crypto.randomUUID()}`
-      : await requestDiditSession(data.returnUrl, userId);
+    let sessionId: string;
+    let sessionToken: string | null = null;
+    let verificationUrl: string;
 
-    const verificationUrl = mockMode
-      ? `${data.returnUrl}?mock_session=${sessionId}&status=approved`
-      : `${process.env.DIDIT_BASE_URL ?? "https://verification.didit.me"}/session/${sessionId}`;
+    if (mockMode) {
+      sessionId = `mock_${crypto.randomUUID()}`;
+      verificationUrl = `${data.returnUrl}?mock_session=${sessionId}&status=approved`;
+    } else {
+      const created = await requestDiditSession({
+        workflowId,
+        callback: data.returnUrl,
+        vendorData: userId,
+      });
+      sessionId = created.session_id;
+      sessionToken = created.session_token ?? null;
+      verificationUrl =
+        created.url ??
+        created.verification_url ??
+        `${process.env.DIDIT_BASE_URL ?? "https://verify.didit.me"}/session/${sessionId}`;
+    }
 
     const { error: insertErr } = await supabase.from("kyc_verifications").insert({
       user_id: userId,
@@ -36,18 +66,20 @@ export const createDiditSession = createServerFn({ method: "POST" })
       didit_session_id: sessionId,
       didit_verification_url: verificationUrl,
       didit_status: "pending",
-    });
+      // Newly-added columns — types file regenerates after the migration is
+      // approved; cast keeps the current build green in the meantime.
+      ...({ workflow_id: workflowId, session_token: sessionToken } as Record<string, unknown>),
+    } as never);
     if (insertErr) throw new Error(`Could not create verification: ${insertErr.message}`);
 
     if (mockMode) {
-      // Simulate an instant webhook: approve the user right away.
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       await supabaseAdmin
         .from("kyc_verifications")
         .update({
           didit_status: "approved",
           completed_at: new Date().toISOString(),
-          raw_payload: { mock: true, decision: "approved" },
+          raw_payload: { mock: true, decision: "approved" } as never,
         })
         .eq("didit_session_id", sessionId);
 
@@ -65,25 +97,38 @@ export const createDiditSession = createServerFn({ method: "POST" })
       });
     }
 
-    return { sessionId, verificationUrl, mockMode };
+    return { sessionId, sessionToken, verificationUrl, mockMode };
   });
 
-async function requestDiditSession(returnUrl: string, userId: string): Promise<string> {
+async function requestDiditSession(input: {
+  workflowId: string | null;
+  callback: string;
+  vendorData: string;
+}): Promise<z.infer<typeof diditV3SessionSchema>> {
   const apiKey = process.env.DIDIT_API_KEY;
   const baseUrl = process.env.DIDIT_BASE_URL ?? "https://verification.didit.me";
   if (!apiKey) throw new Error("DIDIT_API_KEY not configured");
+  if (!input.workflowId) throw new Error("DIDIT_WORKFLOW_ID not configured");
 
-  const res = await fetch(`${baseUrl}/v1/session/`, {
+  const res = await fetch(`${baseUrl}/v3/session/`, {
     method: "POST",
-    headers: { "x-api-key": apiKey, "content-type": "application/json" },
+    headers: {
+      "x-api-key": apiKey,
+      "content-type": "application/json",
+      accept: "application/json",
+    },
     body: JSON.stringify({
-      vendor_data: userId,
-      callback: returnUrl,
+      workflow_id: input.workflowId,
+      callback: input.callback,
+      vendor_data: input.vendorData,
     }),
   });
-  if (!res.ok) throw new Error(`Didit session request failed: ${res.status}`);
-  const json = (await res.json()) as { session_id: string };
-  return json.session_id;
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error(`Didit session request failed (${res.status}): ${detail.slice(0, 300)}`);
+  }
+  return diditV3SessionSchema.parse(await res.json());
 }
 
 /** Read the current user's latest verification (used by pending screens). */
