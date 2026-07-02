@@ -100,8 +100,9 @@ export function CurrencySelect({
   );
 }
 
-// Illustrative mid-market rates per 1 USD (static — for UI demonstration only).
-// Any pair is computed via USD cross-rate: (from → USD) × (USD → to).
+// Static mid-market USD reference table used only as a fallback when the
+// live Nium rate lookup is unavailable. Any pair is derived via USD
+// cross-rate: (from → USD) × (USD → to).
 const USD_RATES: Record<string, number> = Object.fromEntries(
   NIUM_CURRENCIES.map((c) => [c.code, 1]),
 );

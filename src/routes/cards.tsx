@@ -42,7 +42,7 @@ function CardsPage() {
         </div>
 
         <div className="order-1 md:order-2">
-          <CardMockup />
+          <CardShowcase />
         </div>
       </section>
 
@@ -69,7 +69,7 @@ function CardsPage() {
   );
 }
 
-function CardMockup() {
+function CardShowcase() {
   return (
     <div className="relative mx-auto aspect-[1.586/1] w-full max-w-md bg-secondary text-secondary-foreground shadow-[0_30px_60px_-20px_rgba(0,0,0,0.5)]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(219,177,73,0.25),transparent_60%)]" />
