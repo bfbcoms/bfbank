@@ -407,6 +407,110 @@ function ReviewDrawer({
             {row.rejection_reason && <Row label="Reason" value={row.rejection_reason} />}
           </DetailBlock>
 
+          <DetailBlock title="Decision payload">
+            <div className="max-h-64 overflow-auto bg-black/60 p-3">
+              <pre className="text-[10px] leading-relaxed text-secondary-foreground/80">
+                {row.decision_data
+                  ? JSON.stringify(row.decision_data, null, 2)
+                  : "No decision data recorded yet."}
+              </pre>
+            </div>
+          </DetailBlock>
+
+          <DetailBlock title="Webhook events">
+            {activityLoading ? (
+              <div className="flex items-center gap-2 px-3 py-3 text-[11px] text-secondary-foreground/50">
+                <Loader2 className="h-3 w-3 animate-spin" /> Loading…
+              </div>
+            ) : events.length === 0 ? (
+              <div className="px-3 py-3 text-[11px] text-secondary-foreground/50">
+                No webhook callbacks received.
+              </div>
+            ) : (
+              events.map((e) => (
+                <div
+                  key={e.id}
+                  className="grid grid-cols-[1fr_auto] gap-2 border-b border-white/5 px-3 py-2 text-[11px] last:border-b-0"
+                >
+                  <div>
+                    <p className="text-secondary-foreground">{e.status}</p>
+                    <p className="text-[10px] text-secondary-foreground/50">
+                      {new Date(e.received_at).toLocaleString()}
+                      {e.decision_id ? ` · decision ${e.decision_id.slice(0, 8)}…` : ""}
+                    </p>
+                  </div>
+                  <span className="self-start border border-white/10 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.2em] text-secondary-foreground/60">
+                    {e.processed_status ?? "—"}
+                  </span>
+                </div>
+              ))
+            )}
+          </DetailBlock>
+
+          <DetailBlock title="Notifications">
+            {activityLoading ? (
+              <div className="flex items-center gap-2 px-3 py-3 text-[11px] text-secondary-foreground/50">
+                <Loader2 className="h-3 w-3 animate-spin" /> Loading…
+              </div>
+            ) : notifs.length === 0 ? (
+              <div className="px-3 py-3 text-[11px] text-secondary-foreground/50">
+                No notifications sent.
+              </div>
+            ) : (
+              notifs.map((n) => (
+                <div
+                  key={n.id}
+                  className="grid grid-cols-[1fr_auto] gap-2 border-b border-white/5 px-3 py-2 text-[11px] last:border-b-0"
+                >
+                  <div>
+                    <p className="uppercase tracking-[0.2em] text-secondary-foreground/70">
+                      {n.channel} · {n.provider}
+                    </p>
+                    <p className="text-[10px] text-secondary-foreground/50">
+                      {new Date(n.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                  <span className="self-start border border-white/10 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.2em] text-secondary-foreground/60">
+                    {n.status}
+                  </span>
+                </div>
+              ))
+            )}
+          </DetailBlock>
+
+          <DetailBlock title="OTP requests">
+            {activityLoading ? (
+              <div className="flex items-center gap-2 px-3 py-3 text-[11px] text-secondary-foreground/50">
+                <Loader2 className="h-3 w-3 animate-spin" /> Loading…
+              </div>
+            ) : otps.length === 0 ? (
+              <div className="px-3 py-3 text-[11px] text-secondary-foreground/50">
+                No OTP challenges issued.
+              </div>
+            ) : (
+              otps.map((o) => (
+                <div
+                  key={o.id}
+                  className="grid grid-cols-[1fr_auto] gap-2 border-b border-white/5 px-3 py-2 text-[11px] last:border-b-0"
+                >
+                  <div>
+                    <p className="uppercase tracking-[0.2em] text-secondary-foreground/70">
+                      {o.purpose} · {o.provider}
+                    </p>
+                    <p className="text-[10px] text-secondary-foreground/50">
+                      {new Date(o.created_at).toLocaleString()} · expires{" "}
+                      {new Date(o.expires_at).toLocaleString()}
+                    </p>
+                  </div>
+                  <span className="self-start border border-white/10 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.2em] text-secondary-foreground/60">
+                    {o.status}
+                  </span>
+                </div>
+              ))
+            )}
+          </DetailBlock>
+
+
           <div className="border border-white/10 bg-white/[0.02] p-4">
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-primary">
               <ShieldCheck className="h-3.5 w-3.5" strokeWidth={1.5} /> Manual override
