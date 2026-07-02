@@ -249,6 +249,42 @@ function ReviewDrawer({
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState<"approve" | "reject" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [events, setEvents] = useState<WebhookEvent[]>([]);
+  const [notifs, setNotifs] = useState<NotificationRow[]>([]);
+  const [otps, setOtps] = useState<OtpRow[]>([]);
+  const [activityLoading, setActivityLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      setActivityLoading(true);
+      const [evRes, notifRes, otpRes] = await Promise.all([
+        row.didit_session_id
+          ? supabase
+              .from("didit_webhook_events" as never)
+              .select("id, session_id, status, decision_id, received_at, processed_status")
+              .eq("session_id", row.didit_session_id)
+              .order("received_at", { ascending: false })
+              .limit(50)
+          : Promise.resolve({ data: [] as WebhookEvent[] } as never),
+        supabase
+          .from("notification_logs")
+          .select("*")
+          .eq("user_id", row.user_id)
+          .order("created_at", { ascending: false })
+          .limit(20),
+        supabase
+          .from("otp_requests")
+          .select("*")
+          .eq("user_id", row.user_id)
+          .order("created_at", { ascending: false })
+          .limit(20),
+      ]);
+      setEvents(((evRes as { data: WebhookEvent[] | null }).data ?? []) as WebhookEvent[]);
+      setNotifs((notifRes.data ?? []) as NotificationRow[]);
+      setOtps((otpRes.data ?? []) as OtpRow[]);
+      setActivityLoading(false);
+    })();
+  }, [row.id, row.user_id, row.didit_session_id]);
 
   async function decide(decision: "approve" | "reject") {
     setError(null);
