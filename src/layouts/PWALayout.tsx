@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/BrandLogo";
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { LayoutDashboard, Wallet, CreditCard, ArrowUpRight, Settings, ShieldCheck } from "lucide-react";
