@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { Gauge, Users, FileSearch, Mail, Smartphone, LayoutTemplate, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { BrandLogo } from "@/components/BrandLogo";
 
 const nav = [
   { to: "/admin", label: "Overview", icon: Gauge },
@@ -19,9 +20,12 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-secondary text-secondary-foreground">
       <aside className="fixed inset-y-0 left-0 hidden w-56 flex-col border-r border-white/10 bg-black md:flex">
-        <div className="border-b border-white/10 px-5 py-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-primary">Operations</p>
-          <p className="mt-1 text-sm font-semibold tracking-institutional">BFB Console</p>
+        <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4">
+          <BrandLogo className="h-8 w-8 object-contain" alt="" />
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-primary">Operations</p>
+            <p className="mt-0.5 text-sm font-semibold tracking-institutional">BFB Console</p>
+          </div>
         </div>
         <nav className="flex-1 overflow-y-auto py-2">
           {nav.map((item) => {

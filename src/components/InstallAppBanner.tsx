@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/BrandLogo";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
@@ -60,9 +61,8 @@ export function InstallAppBanner() {
       style={{ bottom: "calc(env(safe-area-inset-bottom) + 5rem)" }}
     >
       <div className="flex items-start gap-3 px-4 py-3">
-        <div className="grid h-9 w-9 shrink-0 place-items-center bg-primary text-primary-foreground text-xs font-semibold">
-          BFB
-        </div>
+        <BrandLogo className="h-9 w-9 shrink-0 object-contain" alt="" />
+
         <div className="min-w-0 flex-1">
           <p className="text-[10px] uppercase tracking-[0.25em] text-primary">Install</p>
           <p className="mt-0.5 text-xs text-secondary-foreground/80">

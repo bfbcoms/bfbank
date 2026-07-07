@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/BrandLogo";
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { LayoutDashboard, Wallet, CreditCard, ArrowUpRight, Settings, ShieldCheck } from "lucide-react";
@@ -24,9 +25,8 @@ export function PWALayout({ children }: { children: ReactNode }) {
       >
         <div className="flex h-14 items-center justify-between px-5">
           <div className="flex items-center gap-2">
-            <div className="grid h-7 w-7 place-items-center bg-secondary text-primary text-xs font-semibold">
-              BFB
-            </div>
+            <BrandLogo className="h-7 w-7 object-contain" alt="" />
+
             <span className="text-xs font-medium tracking-institutional uppercase">
               Bright Future
             </span>

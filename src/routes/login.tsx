@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/BrandLogo";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Eye, EyeOff, Loader2, ShieldCheck } from "lucide-react";
@@ -47,9 +48,8 @@ function LoginPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(219,177,73,0.18),transparent_55%)]" />
         <div className="relative flex items-center gap-3">
           <Link to="/" className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center bg-primary text-primary-foreground text-sm font-semibold">
-              B
-            </span>
+            <BrandLogo className="h-9 w-9 object-contain" alt="" />
+
             <span className="text-sm font-medium tracking-institutional uppercase">
               Bright Future Bank
             </span>

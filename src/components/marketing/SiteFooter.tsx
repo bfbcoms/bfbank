@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/BrandLogo";
 import { Link } from "@tanstack/react-router";
 
 const columns = [
@@ -46,9 +47,8 @@ export function SiteFooter() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-6">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center bg-primary text-primary-foreground text-sm font-semibold">
-                B
-              </span>
+              <BrandLogo className="h-9 w-9 object-contain" alt="" />
+
               <span className="text-sm font-medium tracking-institutional uppercase">
                 Bright Future Bank
               </span>
