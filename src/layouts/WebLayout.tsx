@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { LayoutDashboard, Wallet, CreditCard, ArrowUpRight, Settings, ShieldCheck, BadgeCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsStaff } from "@/hooks/use-is-staff";
+import { BrandLogo } from "@/components/BrandLogo";
 
 const nav = [
   { to: "/app/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -21,9 +22,7 @@ export function WebLayout({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground">
       <aside className="fixed inset-y-0 left-0 hidden w-64 flex-col border-r border-border bg-secondary text-secondary-foreground md:flex">
         <div className="flex items-center gap-3 px-6 py-6">
-          <div className="grid h-9 w-9 place-items-center bg-primary text-primary-foreground text-sm font-semibold">
-            BFB
-          </div>
+          <BrandLogo className="h-9 w-9 object-contain" />
           <span className="text-sm font-medium tracking-institutional uppercase">
             Bright Future
           </span>

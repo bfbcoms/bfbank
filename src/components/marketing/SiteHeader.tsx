@@ -82,9 +82,8 @@ export function SiteHeader() {
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <Link to="/" className="flex items-center gap-3" aria-label="Bright Future Bank home">
-            <span aria-hidden className="grid h-8 w-8 place-items-center bg-secondary text-primary text-sm font-semibold">
-              B
-            </span>
+            <BrandLogo className="h-8 w-8 object-contain" alt="" />
+
             <span className="text-sm font-medium tracking-institutional uppercase">
               Bright Future Bank
             </span>
