@@ -91,6 +91,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: "Bright Future Bank" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "Bright Future Bank — Cross-border banking, redefined" },
+      { name: "twitter:title", content: "Bright Future Bank — Cross-border banking, redefined" },
+      { name: "description", content: "Multi-currency accounts, instant global transfers and institutional-grade controls — engineered for people and businesses that move across borders." },
+      { property: "og:description", content: "Multi-currency accounts, instant global transfers and institutional-grade controls — engineered for people and businesses that move across borders." },
+      { name: "twitter:description", content: "Multi-currency accounts, instant global transfers and institutional-grade controls — engineered for people and businesses that move across borders." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/f4a7312c-58fa-45a6-b8a7-7f88a7d47616" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/f4a7312c-58fa-45a6-b8a7-7f88a7d47616" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
